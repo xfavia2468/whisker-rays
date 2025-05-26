@@ -1,0 +1,17 @@
+.container {
+    width: 500px;
+    border: 2px solid #000;
+    margin: 5px;
+    padding: 5px;
+    overflow-y: auto; /* Vertical scroll */
+    display: flex;
+    flex-direction: column; /* stack children vertically */
+    justify-content: flex-start;
+    height: 80vh; /* fill viewport height */
+    box-sizing: border-box;
+}
+
+.catpic {
+    width: 100px;
+    height: auto;
+}
