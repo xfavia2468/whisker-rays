@@ -25,28 +25,38 @@
     column-gap: 10px;
 }
 
-.catpic {
-    width: 100px;
-    height: auto;
-    border: 3px inset #000;
-}
-
 .title {
     font-family: 'Patrick Hand', cursive;
     font-weight: bold;
     font-size: 2rem;
 }
 
+.subtitletext {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+}
+
+.catpic {
+    width: 100px;
+    height: auto;
+    border: 3px inset #000;
+    border-radius: 7px;
+}
+
 .catrow {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: 8px 0;
+    align-items: center;
+    padding: 4px 0;
 }
 
 p {
     font-family: 'Patrick Hand', cursive;
     margin: 2px;
+    padding: 1px;
 }
 
 span {
@@ -61,7 +71,7 @@ button {
     padding: 16px 16px;
     border-radius: 8px;
     text-align: center;
-    margin-top: 15px;
+    margin-top: 0px;
     transition-duration: 0.2s;
 }
 
@@ -74,6 +84,33 @@ button:active {
     border-color: White;
     color: White;
     background-color: Black;
+}
+
+.upgradebutton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 4px;
+}
+
+.upgradetext {
+    font-size: 125%;
+}
+
+.upgraderow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 4px 0;
+}
+
+.upgradepic {
+    width: 75px;
+    height: auto;
+    margin: 0px;
+    padding: 0px;
 }
 
 .hidden {
@@ -103,4 +140,5 @@ button:active {
     background-image: url("./images/catclickmouth.svg");
     border: none;
     background-color: aliceblue;
+    padding: 80px 80px;
 }

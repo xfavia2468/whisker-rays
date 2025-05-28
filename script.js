@@ -1,12 +1,3 @@
-let totalMeows = 0;
-let meowsPerClick = 1;
-let clickTimestamps = [];
-let meowsPerSecond = 0;
-const catQuantities = [0, 0, 0, 0, 0, 0, 0, 0];
-
-const catMps = [1, 5, 20, 100, 500, 2500, 15000, 100000];
-const catBasePrices = [15, 100, 800, 5000, 30000, 150000, 750000, 5000000];
-
 const meowsCounter = document.getElementById("meowsCounter");
 
 const buyCat1Button = document.getElementById("buycat1button");
@@ -33,6 +24,24 @@ const cat5Row = document.getElementById("cat5row");
 const cat6Row = document.getElementById("cat6row");
 const cat7Row = document.getElementById("cat7row");
 const cat8Row = document.getElementById("cat8row");
+
+const laserPointerRow = document.getElementById("laserpointerrow");
+
+let totalMeows = 0;
+let meowsPerClick = 1;
+let clickTimestamps = [];
+let meowsPerSecond = 0;
+const catQuantities = [0, 0, 0, 0, 0, 0, 0, 0];
+
+const catMps = [1, 5, 20, 100, 500, 2500, 15000, 100000];
+const catBasePrices = [15, 100, 800, 5000, 30000, 150000, 750000, 5000000];
+
+// Laser pointer = 0 ;
+const upgradePrices = [50];
+const upgradeBreakPoints = [25];
+const upgradeActive = [0];
+const upgradeRows = [laserPointerRow];
+
 
 function updateMeowsCounter() {
     meowsCounter.innerText = "Meows (Ⲙ): " + Math.floor(totalMeows) + " | Ⲙps: " +
@@ -110,17 +119,11 @@ function catClicked() {
 }
 
 function generateMeowsPerSecondBase() {
-    meowsPerSecond =
-      catQuantities[0] * catMps[0] +
-      catQuantities[1] * catMps[1] +
-      catQuantities[2] * catMps[2] +
-      catQuantities[3] * catMps[3] +
-      catQuantities[4] * catMps[4] +
-      catQuantities[5] * catMps[5] +
-      catQuantities[6] * catMps[6] +
-      catQuantities[7] * catMps[7];
-
-    return meowsPerSecond;
+    let total = 0;
+    for (let i = 0; i < catQuantities.length; i++) {
+        total += catQuantities[i] * catMps[i];
+    }
+    return total;
 }
 
 function addMeowsPerSecondBase() {
@@ -151,9 +154,33 @@ function getTierMps(tier) {
   return catQuantities[tier - 1] * catMps[tier - 1];
 }
 
+function updateUpgradeRows(index) {
+    let price = upgradePrices[index];
+    let active = upgradeActive[index] === 1;
+    let row = upgradeRows[index];
+    if (!active && price <= totalMeows) {
+        totalMeows -= price;
+        row.classList.add("hidden");
+        upgradeActive[index] = 1;
+    }
+}
+
+function pollBreakPoints() {
+    setInterval(() => {
+        for (let i = 0; i < upgradeActive.length; i++) {
+            if (upgradeActive[i] === 0) {
+                if (totalMeows >= upgradeBreakPoints[i]) {
+                    upgradeRows[i].classList.remove('hidden');
+                }
+            }
+        }
+    }, 250)
+}
+
 function main(){
     updateMeowsCounter();
     updateCatShop();
     addMeowsPerSecondBase()
+    pollBreakPoints();
 }
 main();
