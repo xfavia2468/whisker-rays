@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Cat Clicker</title>
     <link rel="stylesheet" href="./style.css">
+     <script src="./script.js" defer></script>
 </head>
 <body>
 
@@ -18,43 +19,43 @@
         <div class="grid">
             <!-- LEFT SHOP PART-->
             <div class="container" >
-                <div id="cat1row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat1button">BUY: Ⲙ5</button>
+                <div id="cat1row" class="catrow">
+                    <button id="buycat1button" onclick="attemptCatBuy(1)">BUY: (Ⲙ) 15</button>
                     <span id="cat1text" style="margin-top: 35px;">Cat 1 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat1.jpg" class="catpic" alt="Cat1Pic">
                 </div>
-                <div id="cat2row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat2button">BUY</button>
+                <div id="cat2row" class="hidden catrow" onclick="attemptCatBuy(2)">
+                    <button id="buycat2button">BUY: (Ⲙ) 100</button>
                     <span id="cat2text" style="margin-top: 35px;">Cat 2 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat2.png" class="catpic" alt="Cat2Pic">
                 </div>
-                <div id="cat3row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat3button">BUY</button>
+                <div id="cat3row" class="hidden catrow" onclick="attemptCatBuy(3)">
+                    <button id="buycat3button">BUY: (Ⲙ) 800</button>
                     <span id="cat3text" style="margin-top: 35px;">Cat 3 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat3.png" class="catpic" alt="Cat3Pic">
                 </div>
-                <div id="cat4row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat4button">BUY</button>
+                <div id="cat4row" class="hidden catrow" onclick="attemptCatBuy(4)">
+                    <button id="buycat4button">BUY: (Ⲙ) 50000</button>
                     <span id="cat4text" style="margin-top: 35px;">Cat 4 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat4.webp" class="catpic" alt="Cat2Pic">
                 </div>
-                <div id="cat5row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat5button">BUY</button>
+                <div id="cat5row" class="hidden catrow" onclick="attemptCatBuy(5)">
+                    <button id="buycat5button">BUY: (Ⲙ) 30000</button>
                     <span id="cat5text" style="margin-top: 35px;">Cat 5 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat5.jpg" class="catpic" alt="Cat5Pic">
                 </div>
-                <div id="cat6row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat6button">BUY</button>
+                <div id="cat6row" class="hidden catrow" onclick="attemptCatBuy(6)">
+                    <button id="buycat6button">BUY: (Ⲙ) 150000</button>
                     <span id="cat6text" style="margin-top: 35px;">Cat 6 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat6.jpg" class="catpic" alt="Cat6Pic">
                 </div>
-                <div id="cat7row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat7button">BUY</button>
+                <div id="cat7row" class="hidden catrow" onclick="attemptCatBuy(7)">
+                    <button id="buycat7button">BUY: (Ⲙ) 750000</button>
                     <span id="cat7text" style="margin-top: 35px;">Cat 7 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat7.webp" class="catpic" alt="Cat7Pic">
                 </div>
-                <div id="cat8row" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0;">
-                    <button id="buycat8button">BUY</button>
+                <div id="cat8row" class="hidden catrow" onclick="attemptCatBuy(8)">
+                    <button id="buycat8button">BUY: (Ⲙ) 5000000</button>
                     <span id="cat8text" style="margin-top: 35px;">Cat 8 : 0 Owned : 0 Ⲙps</span>
                     <img src="./images/cat8.jpg" class="catpic" alt="Cat8Pic">
                 </div>
@@ -62,11 +63,13 @@
 
             <!-- MIDDLE WINDOW PART-->
             <div style="display: flex; flex-direction: column;">
-                <div class="window" style="height: 54vh; margin-bottom: 15px;">
-                    <p>gort</p>
+                <div class="window" style="height: 54vh; margin-bottom: 15px; display:flex;
+                justify-content: center; align-items: center">
+                    <button id="catButton" onclick="catClicked()"></button>
                 </div>
+
                 <div class="window" style="height: 25vh">
-                    <p>yo</p>
+                    <p>Nine Lives Mode</p>
                 </div>
             </div>
 

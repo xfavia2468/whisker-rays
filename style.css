@@ -28,6 +28,7 @@
 .catpic {
     width: 100px;
     height: auto;
+    border: 3px inset #000;
 }
 
 .title {
@@ -36,13 +37,47 @@
     font-size: 2rem;
 }
 
+.catrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 0;
+}
+
+p {
+    font-family: 'Patrick Hand', cursive;
+    margin: 2px;
+}
+
+span {
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1rem;
+}
+
 button {
     font-family: 'Patrick Hand', cursive;
     font-weight: bold;
+    font-size: 1rem;
     padding: 16px 16px;
     border-radius: 8px;
     text-align: center;
     margin-top: 15px;
+    transition-duration: 0.2s;
+}
+
+button:hover {
+    background-color: Pink;
+    color: White;
+}
+
+button:active {
+    border-color: White;
+    color: White;
+    background-color: Black;
+}
+
+.hidden {
+    display: none;
 }
 
 #meowsCounter {
@@ -51,4 +86,21 @@ button {
     font-size: 1.75rem;
     margin: 0.25em 0;
     color: #000;
+}
+
+#catButton {
+    background-image: url("./images/catclickface.svg");
+    border: none;
+    background-color: transparent;
+    padding: 70px 70px;
+    transition-duration: 0.2s;
+}
+#catButton:hover {
+    background-color: aliceblue;
+    padding: 75px 75px;
+}
+#catButton:active {
+    background-image: url("./images/catclickmouth.svg");
+    border: none;
+    background-color: aliceblue;
 }
