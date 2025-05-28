@@ -35,6 +35,11 @@ const catQuantities = [0, 0, 0, 0, 0, 0, 0, 0];
 
 const catMps = [1, 5, 20, 100, 500, 2500, 15000, 100000];
 const catBasePrices = [15, 100, 800, 5000, 30000, 150000, 750000, 5000000];
+const buyCatButtons = [buyCat1Button, buyCat2Button, buyCat3Button, buyCat4Button, buyCat5Button,
+    buyCat6Button, buyCat7Button, buyCat8Button];
+const catTexts = [cat1Text, cat2Text, cat3Text, cat4Text, cat5Text, cat6Text, cat7Text,
+    cat8Text];
+const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, cat8Row];
 
 // Laser pointer = 0 ;
 const upgradePrices = [50];
@@ -50,54 +55,15 @@ function updateMeowsCounter() {
 }
 
 function updateCatShop() {
-    buyCat1Button.innerText = "BUY: (Ⲙ) " + getCatCost(1, catQuantities[0]);
-    cat1Text.innerText = "Cat 1 : " + catQuantities[0] + " Owned : " + getTierMps(1) +
-            " Ⲙps";
-    if (catQuantities[0] > 0) {
-        cat2Row.classList.remove("hidden");
-        buyCat2Button.innerText = "BUY: (Ⲙ) " + getCatCost(2, catQuantities[1]);
-        cat2Text.innerText = "Cat 2 : " + catQuantities[1] + " Owned : " + getTierMps(2) +
-            " Ⲙps";
+    for (let i = 0; i < catQuantities.length; i++) {
+        buyCatButtons[i].innerText = `BUY: (Ⲙ) ${getCatCost(i + 1, catQuantities[i])}`;
+        catTexts[i].innerText = `Cat ${i + 1} : ${catQuantities[i]} Owned : ${getTierMps(i + 1)} Ⲙps`;
+        if (i > 0 && catQuantities[i - 1] > 0) {
+            catRows[i].classList.remove("hidden");
+        }
     }
-    if (catQuantities[1] > 0) {
-        cat3Row.classList.remove("hidden");
-        buyCat3Button.innerText = "BUY: (Ⲙ) " + getCatCost(3, catQuantities[2]);
-       cat3Text.innerText = "Cat 3 : " + catQuantities[2] + " Owned : " + getTierMps(3) +
-            " Ⲙps";
-    }
-    if (catQuantities[2] > 0) {
-       cat4Row.classList.remove("hidden");
-       buyCat4Button.innerText = "BUY: (Ⲙ) " + getCatCost(4, catQuantities[3]);
-        cat4Text.innerText = "Cat 4 : " + catQuantities[3] + " Owned : " + getTierMps(4) +
-            " Ⲙps";
-    }
-    if (catQuantities[3] > 0) {
-        cat5Row.classList.remove("hidden");
-        buyCat5Button.innerText = "BUY: (Ⲙ) " + getCatCost(5, catQuantities[4]);
-        cat5Text.innerText = "Cat 5 : " + catQuantities[4] + " Owned : " + getTierMps(5) +
-            " Ⲙps";
-    }
-    if (catQuantities[4] > 0) {
-        cat6Row.classList.remove("hidden");
-        buyCat6Button.innerText = "BUY: (Ⲙ) " + getCatCost(6, catQuantities[5]);
-        cat6Text.innerText = "Cat 6 : " + catQuantities[5] + " Owned : " + getTierMps(6) +
-            " Ⲙps";
-    }
-    if (catQuantities[5] > 0) {
-        cat7Row.classList.remove("hidden");
-        buyCat7Button.innerText = "BUY: (Ⲙ) " + getCatCost(7, catQuantities[6]);
-        cat7Text.innerText = "Cat 7 : " + catQuantities[6] + " Owned : " + getTierMps(7) +
-            " Ⲙps";
-    }
-    if (catQuantities[6] > 0) {
-        cat8Row.classList.remove("hidden");
-        buyCat8Button.innerText = "BUY: (Ⲙ) " + getCatCost(8, catQuantities[7]);
-        cat8Text.innerText = "Cat 8 : " + catQuantities[7] + " Owned : " + getTierMps(8) +
-            " Ⲙps";
-    }
-    if (catQuantities[7] > 0) {
-    }
-    requestAnimationFrame(updateCatShop)
+
+    requestAnimationFrame(updateCatShop);
 }
 
 function attemptCatBuy(tier) {
