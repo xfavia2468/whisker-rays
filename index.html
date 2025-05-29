@@ -9,8 +9,8 @@
 <body>
 
     <header>
-        <h1 style="margin-bottom: 5px; margin-top: 5px;" class="title">CAT CLICKER</h1>
-        <hr style="margin-top: 5px;">
+        <h1 style="margin-bottom: 5px; margin-top: 5px;" class="title">🐾CAT CLICKER🐾</h1>
+        <hr style="margin-top: 5px; border-color: #2e1f5e;">
     </header>
 
     <main>
@@ -63,9 +63,10 @@
             </div>
 
             <!-- MIDDLE WINDOW PART-->
-            <div style="display: flex; flex-direction: column;">
-                <div class="window" style="height: 54vh; margin-bottom: 15px; display:flex;
-                justify-content: center; align-items: center">
+            <div style="display: flex; flex-direction: column;" id="midwindow">
+                <div id="catclickwindow" class="window">
+                    <canvas id="pawEffectCanvas"></canvas>
+                    <canvas id="weatherCanvas"></canvas>
                     <button id="catButton" onclick="catClicked()"></button>
                 </div>
 

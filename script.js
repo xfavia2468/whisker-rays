@@ -1,6 +1,7 @@
 (function () {
 
 const meowsCounter = document.getElementById("meowsCounter");
+const pawEffectCanvas = document.getElementById("pawEffectCanvas");
 
 const buyCat1Button = document.getElementById("buycat1button");
 const buyCat2Button = document.getElementById("buycat2button");
@@ -55,6 +56,49 @@ function updateMeowsCounter() {
         Math.floor(generateMeowsPerSecond());
     requestAnimationFrame(updateMeowsCounter);
 }
+
+/* Handles paw effect on click */
+const ectx = pawEffectCanvas.getContext('2d');
+let paws = [];
+function resizeCanvas(canvas) {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(pawEffectCanvas);
+document.getElementById('catButton').addEventListener('click', (e) => {
+    const rect = pawEffectCanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const pawEmojis = ['🐾', '🐱', '😺', '😻'];
+    const randomEmoji = pawEmojis[Math.floor(Math.random() * pawEmojis.length)];
+    for (let i = 0; i < 1; i++) { // spawn 1 per click
+        paws.push({
+            x: x + Math.random() * 80 - 50,
+            y: y + Math.random() * 20 - 10,
+            opacity: 1,
+            speed: 2 + Math.random(),
+            size: 24 + Math.random() * 16,
+            emoji: randomEmoji
+        });
+    }
+});
+function draw() {
+    ectx.clearRect(0, 0, pawEffectCanvas.width, pawEffectCanvas.height);
+    for (let i = paws.length - 1; i >= 0; i--) {
+        const p = paws[i];
+        ectx.globalAlpha = p.opacity;
+        ectx.font = `${p.size}px Patrick Hand, sans-serif`;
+        ectx.fillText(p.emoji, p.x, p.y);
+        p.y -= p.speed;
+        p.opacity -= 0.01;
+        if (p.opacity <= 0) paws.splice(i, 1);
+    }
+    ectx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+}
+/*     */
 
 function updateCatShop() {
     for (let i = 0; i < catQuantities.length; i++) {
@@ -159,11 +203,132 @@ function pollBreakPoints() {
     }, 250)
 }
 
+let weatherState = "night"; // sunny, rainy, stormy, night
+let nightStars = null;
+let lightningFlash = false;
+let lightningFlashEndTime = 0;
+const weatherCanvas = document.getElementById("weatherCanvas");
+const wctx = weatherCanvas.getContext('2d');
+function resizeWeatherCanvas() {
+    weatherCanvas.width = weatherCanvas.offsetWidth;
+    weatherCanvas.height = weatherCanvas.offsetHeight;
+}
+window.addEventListener("resize", resizeWeatherCanvas);
+resizeWeatherCanvas();
+let particlesWeather = [];
+function changeWeather(state) {
+    weatherState = state;
+    particlesWeather = [];
+    if (state === "rainy" || state === "stormy") {
+        for (let i = 0; i < 100; i++) {
+            particlesWeather.push({
+                x: Math.random() * weatherCanvas.width,
+                y: Math.random() * weatherCanvas.height,
+                speed: 2 + Math.random() * 3,
+                length: 10 + Math.random() * 10,
+            });
+        }
+    }
+
+    if (state !== "night") {
+        nightStars = null; // Reset stars if not night
+    }
+}
+
+function drawWeather(timestamp) {
+    wctx.clearRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+
+    switch (weatherState) {
+        case "sunny":
+            let grd = wctx.createLinearGradient(0, 0, 0, weatherCanvas.height);
+            grd.addColorStop(0, "#FFD580");
+            grd.addColorStop(1, "#FFF5CC");
+            wctx.fillStyle = grd;
+            wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+            break;
+
+        case "rainy":
+        case "stormy":
+            wctx.fillStyle = weatherState === "stormy" ? "#2c2c2c" : "#555";
+            wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+            wctx.strokeStyle = "#A3D5FF";
+            wctx.lineWidth = 1;
+            particlesWeather.forEach(p => {
+                wctx.beginPath();
+                wctx.moveTo(p.x, p.y);
+                wctx.lineTo(p.x, p.y + p.length);
+                wctx.stroke();
+                p.y += p.speed;
+                if (p.y > weatherCanvas.height) {
+                    p.y = -p.length;
+                    p.x = Math.random() * weatherCanvas.width;
+                }
+            });
+            if (weatherState === "stormy") {
+                if (lightningFlash && performance.now() < lightningFlashEndTime) {
+                    wctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+                    wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+                } else if (Math.random() < 0.0125) {
+                    lightningFlash = true;
+                    lightningFlashEndTime = performance.now() + 200; // Flash duration in milliseconds
+                } else {
+                    lightningFlash = false;
+                }
+            }
+            break;
+
+        case "night":
+            wctx.fillStyle = "#0d1b2a";
+            wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+
+            if (!nightStars) {
+                nightStars = [];
+                for (let i = 0; i < 100; i++) {
+                    nightStars.push({
+                        x: Math.random() * weatherCanvas.width,
+                        y: Math.random() * weatherCanvas.height * 0.8,
+                        radius: Math.random() * 1.5 + 0.5,
+                        twinkleSpeed: Math.random() * 0.002 + 0.001,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            for (let star of nightStars) {
+                const alpha = 0.5 + 0.5 * Math.sin(timestamp * star.twinkleSpeed + star.phase);
+                wctx.beginPath();
+                wctx.arc(star.x, star.y, star.radius, 0, 2 * Math.PI);
+                wctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                wctx.fill();
+            }
+            break;
+
+    }
+}
+
+function animateWeather(timestamp) {
+    drawWeather(timestamp);
+    requestAnimationFrame(animateWeather);
+}
+
+function cycleWeather() {
+    const weatherCycle = ["sunny", "rainy", "stormy", "night"];
+    let currentIndex = 0;
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % weatherCycle.length;
+        changeWeather(weatherCycle[currentIndex]);
+    }, 5000);
+}
+
 function main(){
     updateMeowsCounter();
     updateCatShop();
     addMeowsPerSecondBase()
     pollBreakPoints();
+    draw();
+    animateWeather();
+    requestAnimationFrame(animateWeather);
+    cycleWeather();
 }
 main();
 

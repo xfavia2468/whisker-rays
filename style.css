@@ -11,13 +11,17 @@
     height: 84vh; /* fill viewport height */
     box-sizing: border-box;
     background-color: #F4F0FA; /* Lavender Mist */
-    border: 2px solid #A89BAE; /* Cool Taupe */
+    border: 2px solid #2e1f5e;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
 }
 
 .window {
     padding: 5px;
     background-color: #F4F0FA; /* Lavender Mist */
-    border: 2px solid #A89BAE; /* Cool Taupe */
+    border: 2px solid #2e1f5e;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
 }
 
 .grid {
@@ -27,6 +31,7 @@
     column-gap: 10px;
     scrollbar-color: #B8E0FF #ECE7F6;
     scrollbar-width: thin;
+    border-radius: 8px;
 }
 
 .verticalgrid {
@@ -48,7 +53,7 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 4px;
-    border-bottom: 2px solid #D0C7E6;;
+    border-bottom: 2px solid #2e1f5e;
 }
 
 .catpic {
@@ -64,7 +69,7 @@
     align-items: center;
     padding: 4px 0;
     background-color: #F4F0FA; /* Lavender Mist */
-    border-bottom: 2px solid #D0C7E6;
+    border-bottom: 2px solid #2e1f5e;
 }
 
 p {
@@ -80,27 +85,30 @@ span {
 
 body {
     background-color: #ECE7F6; /* Light Lavender */
-    color: #3B3A5D; /* Indigo Gray text */
+    color: #2e1f5e; /* Indigo Gray text */
 }
 
 button {
     font-family: 'Patrick Hand', cursive;
     font-weight: bold;
     font-size: 1rem;
+    cursor: pointer;
     padding: 16px 16px;
     border-radius: 8px;
     text-align: center;
     margin-top: 0px;
     transition-duration: 0.2s;
     background-color: #B8E0FF; /* Powder Blue */
-    color: #3B3A5D;
-    border: 2px solid #A89BAE;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    color: #2e1f5e;
+    border: 2px solid #2e1f5e;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
 }
 
 button:hover {
     background-color: #B4C5FF; /* Periwinkle Blue */
     color: white;
+    transform: scale(1.02);
+    transition: transform 0.15s ease-in-out;
 }
 
 button:active {
@@ -145,8 +153,39 @@ button:active {
     font-weight: normal;
     font-size: 2rem;
     margin: 0.25em 0;
-    -webkit-text-stroke: 1px #000;
-    -webkit-text-fill-color: #9AD0EC;
+    color: #1f1a3b;
+    /-webkit-text-stroke: 1px #1f1a3b;
+    /-webkit-text-fill-color: #9AD0EC;
+}
+
+#catclickwindow {
+    height: 54vh;
+    margin-bottom: 15px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#pawEffectCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+#weatherCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 #catButton {
@@ -156,19 +195,43 @@ button:active {
     padding: 70px 70px;
     transition-duration: 0.2s;
     animation: breathe 3s ease-in-out infinite;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    position: absolute;
+    z-index: 3;
 }
 #catButton:hover {
-    background-color: aliceblue;
+    background-color: rgba(164, 246, 246, 0.49);
     padding: 75px 75px;
+    transition-duration: 0.2s;
+
 }
 #catButton:active {
     background-image: url("./images/catclickmouth.svg");
     border: none;
-    background-color: aliceblue;
+    background-color: rgba(164, 246, 246, 0.49);
     padding: 80px 80px;
+    transition-duration: 0.2s;
 }
 @keyframes breathe {
     0% { transform: scale(1); }
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
 }
+
+/* Cat shop */
+.grid > div:nth-child(1) {
+    background: linear-gradient(to right, #f2ebfc, #e6e0fa);
+}
+/* Cat window */
+#midwindow > div:nth-child(1) {
+
+}
+/* Nine lives */
+#midwindow > div:nth-child(2) {
+    background: linear-gradient(to right, #fdf7f3, #f8ecda);
+}
+/* Upgrade shop */
+.grid > div:nth-child(3) {
+    background: linear-gradient(to right, #eaf2ff, #dce9ff);
+}
+
