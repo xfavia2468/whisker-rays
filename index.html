@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Cat Clicker</title>
     <link rel="stylesheet" href="./style.css">
-     <script src="./script.js" defer></script>
+    <script src="./script.js" defer></script>
 </head>
 <body>
 
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="window" style="height: 25vh">
-                    <p>Nine Lives Mode</p>
+                    <p class="subtitletext">Nine Lives Mode</p>
                 </div>
             </div>
 
@@ -78,9 +78,21 @@
             <div class="container">
                 <p class="subtitletext">Buy upgrades</p>
                 <div id="laserpointerrow" class=" hidden upgraderow">
-                    <button onclick="updateUpgradeRows(0)" id="laserpointerbutton" class="upgradebutton">
-                        <p id="laserpointertext" class="upgradetext"> Ⲙ50 | Laser pointer | x2 Ⲙ per click</p>
+                    <button id="laserpointerbutton" class="upgradebutton" onclick="updateUpgradeRows(0)">
+                        <grid class="verticalgrid">
+                            <p id="laserpointertext" class="upgradetext"> (Ⲙ50) Laser pointer</p>
+                            <p>Double Ⲙ per click</p>
+                        </grid>
                         <img src="./images/laserPointer.png" alt="Laser Pointer" class="upgradepic">
+                    </button>
+                </div>
+                <div id="yarnballrow" class=" hidden upgraderow">
+                    <button id="yarnballbutton" class="upgradebutton" onclick="updateUpgradeRows(1)">
+                        <grid class="verticalgrid">
+                            <p id="yarnballtext" class="upgradetext"> (Ⲙ250) Yarn ball</p>
+                            <p>Double Cat1 Ⲙps</p>
+                        </grid>
+                        <img src="./images/yarnball.webp" alt="yarn ball" class="upgradepic">
                     </button>
                 </div>
             </div>

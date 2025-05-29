@@ -1,3 +1,5 @@
+(function () {
+
 const meowsCounter = document.getElementById("meowsCounter");
 
 const buyCat1Button = document.getElementById("buycat1button");
@@ -26,15 +28,15 @@ const cat7Row = document.getElementById("cat7row");
 const cat8Row = document.getElementById("cat8row");
 
 const laserPointerRow = document.getElementById("laserpointerrow");
+const yarnBallRow = document.getElementById("yarnballrow");
 
 let totalMeows = 0;
-let meowsPerClick = 1;
 let clickTimestamps = [];
 let meowsPerSecond = 0;
 const catQuantities = [0, 0, 0, 0, 0, 0, 0, 0];
 
 const catMps = [1, 5, 20, 100, 500, 2500, 15000, 100000];
-const catBasePrices = [15, 100, 800, 5000, 30000, 150000, 750000, 5000000];
+const catBasePrices = [25, 150, 1000, 10000, 75000, 350000, 1250000, 10000000];
 const buyCatButtons = [buyCat1Button, buyCat2Button, buyCat3Button, buyCat4Button, buyCat5Button,
     buyCat6Button, buyCat7Button, buyCat8Button];
 const catTexts = [cat1Text, cat2Text, cat3Text, cat4Text, cat5Text, cat6Text, cat7Text,
@@ -42,10 +44,10 @@ const catTexts = [cat1Text, cat2Text, cat3Text, cat4Text, cat5Text, cat6Text, ca
 const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, cat8Row];
 
 // Laser pointer = 0 ;
-const upgradePrices = [50];
-const upgradeBreakPoints = [25];
-const upgradeActive = [0];
-const upgradeRows = [laserPointerRow];
+const upgradePrices = [50, 250];
+const upgradeBreakPoints = [25, 100];
+const upgradeActive = [0, 0];
+const upgradeRows = [laserPointerRow, yarnBallRow];
 
 
 function updateMeowsCounter() {
@@ -62,7 +64,6 @@ function updateCatShop() {
             catRows[i].classList.remove("hidden");
         }
     }
-
     requestAnimationFrame(updateCatShop);
 }
 
@@ -81,13 +82,17 @@ function catClicked() {
     lastClickTime = now;
     clickTimestamps.push(now);
 
-    totalMeows += meowsPerClick;
+    totalMeows += generateMeowsPerClick();
 }
 
 function generateMeowsPerSecondBase() {
     let total = 0;
     for (let i = 0; i < catQuantities.length; i++) {
-        total += catQuantities[i] * catMps[i];
+        let mps = catMps[i];
+
+        if (i === 0 && upgradeActive[1] === 1) mps *= 2; // yarn ball
+
+        total += catQuantities[i] * mps;
     }
     return total;
 }
@@ -99,7 +104,7 @@ function addMeowsPerSecondBase() {
 }
 
 function generateMeowsPerSecond() {
-    return getClicksPerSecond() * meowsPerClick + generateMeowsPerSecondBase();
+    return getClicksPerSecond() * generateMeowsPerClick() + generateMeowsPerSecondBase();
 }
 
 // this function filters out clicks older than 1 second
@@ -120,6 +125,17 @@ function getTierMps(tier) {
   return catQuantities[tier - 1] * catMps[tier - 1];
 }
 
+function generateMeowsPerClick() {
+    let base = 1;
+    let multiplicativeMultipliers = 1;
+    let additiveMultipliers = 0;
+
+    //laser pointer
+    if (upgradeActive[0] === 1) multiplicativeMultipliers *= 2;
+
+    return (base * multiplicativeMultipliers) + additiveMultipliers;
+}
+
 function updateUpgradeRows(index) {
     let price = upgradePrices[index];
     let active = upgradeActive[index] === 1;
@@ -135,7 +151,7 @@ function pollBreakPoints() {
     setInterval(() => {
         for (let i = 0; i < upgradeActive.length; i++) {
             if (upgradeActive[i] === 0) {
-                if (totalMeows >= upgradeBreakPoints[i]) {
+                if (totalMeows >= upgradeBreakPoints[i] && upgradeBreakPoints[i] >= 0) {
                     upgradeRows[i].classList.remove('hidden');
                 }
             }
@@ -150,3 +166,58 @@ function main(){
     pollBreakPoints();
 }
 main();
+
+window.catClicked = catClicked;
+window.attemptCatBuy = attemptCatBuy;
+window.updateUpgradeRows = updateUpgradeRows;
+
+//_______________________TESTING_______________________________
+let isDevMode = true; // WILL DETERMINE IF CHEATS ARE ON
+
+if (isDevMode) {
+
+    window.help = function () {
+        console.log("Commands:\naddMeows(amount);\nsetMeows(amount);\ngiveCats(tier, quantity);\n" +
+            "unlockUpgrades();");
+    }
+
+    window.addMeows = function (amount) {
+        totalMeows += amount;
+        console.log('Added ${amount} meows. Total: ${totalMeows}');
+    };
+
+    window.setMeows = function (amount) {
+        totalMeows = amount;
+        console.log('Set total meows to ${totalMeows}');
+    };
+
+    window.giveCats = function (tier, quantity) {
+        if (tier < 1 || tier > catQuantities.length) {
+            console.warn("Invalid tier number.");
+            return;
+        }
+        catQuantities[tier - 1] += quantity;
+        console.log('Gave ${quantity} Cat ${tier}. Owned now: ${catQuantities[tier - 1]}');
+    };
+
+    window.unlockUpgrades = function () {
+        for (let i = 0; i < upgradeActive.length; i++) {
+            upgradeActive[i] = 1;
+            upgradeRows[i].classList.add("hidden");
+        }
+        console.log("All upgrades unlocked");
+    };
+
+    window.allCats = function (quantity) {
+        if (quantity === undefined) quantity = 1;
+        for (let i = 0; i < catQuantities.length; i++) {
+            catQuantities[i] += quantity;
+        }
+        console.log(`Gave ${quantity} of all Cats`);
+    }
+
+    help();
+}
+
+
+})();
