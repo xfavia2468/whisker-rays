@@ -207,7 +207,9 @@ let weatherState = "night"; // sunny, rainy, stormy, night
 let nightStars = null;
 let lightningFlash = false;
 let lightningFlashEndTime = 0;
+const backdropImage = document.getElementById("backdropImage");
 const weatherCanvas = document.getElementById("weatherCanvas");
+const weatherText = document.getElementById("weatherText");
 const wctx = weatherCanvas.getContext('2d');
 function resizeWeatherCanvas() {
     weatherCanvas.width = weatherCanvas.offsetWidth;
@@ -241,18 +243,20 @@ function drawWeather(timestamp) {
     switch (weatherState) {
         case "sunny":
             let grd = wctx.createLinearGradient(0, 0, 0, weatherCanvas.height);
-            grd.addColorStop(0, "#FFD580");
-            grd.addColorStop(1, "#FFF5CC");
+            grd.addColorStop(0, "#9ebfed");
+            grd.addColorStop(1, "#b2ccf1");
             wctx.fillStyle = grd;
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
+            backdropImage.src = "./images/sunnyBackdrop.png";
             break;
 
         case "rainy":
         case "stormy":
-            wctx.fillStyle = weatherState === "stormy" ? "#2c2c2c" : "#555";
+            wctx.fillStyle = weatherState === "stormy" ? "#2c2c2c" : "#979797";
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
             wctx.strokeStyle = "#A3D5FF";
             wctx.lineWidth = 1;
+            backdropImage.src = "./images/nightBackdrop.png";
             particlesWeather.forEach(p => {
                 wctx.beginPath();
                 wctx.moveTo(p.x, p.y);
@@ -268,7 +272,7 @@ function drawWeather(timestamp) {
                 if (lightningFlash && performance.now() < lightningFlashEndTime) {
                     wctx.fillStyle = "rgba(255, 255, 255, 0.6)";
                     wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-                } else if (Math.random() < 0.0125) {
+                } else if (Math.random() < 0.005) {
                     lightningFlash = true;
                     lightningFlashEndTime = performance.now() + 200; // Flash duration in milliseconds
                 } else {
@@ -280,7 +284,7 @@ function drawWeather(timestamp) {
         case "night":
             wctx.fillStyle = "#0d1b2a";
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-
+            backdropImage.src = "./images/nightBackdrop.png";
             if (!nightStars) {
                 nightStars = [];
                 for (let i = 0; i < 100; i++) {
@@ -317,7 +321,7 @@ function cycleWeather() {
     setInterval(() => {
         currentIndex = (currentIndex + 1) % weatherCycle.length;
         changeWeather(weatherCycle[currentIndex]);
-    }, 5000);
+    }, 3000);
 }
 
 function main(){

@@ -188,6 +188,30 @@ button:active {
     z-index: 1;
 }
 
+#backdropImage {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+    pointer-events: None;
+}
+
+#weatherText {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    bottom: 88%;
+    background-color: #e5e6fa;
+    border-color: #1f1a3b;
+    border-width: 4px;
+    border-radius: 8px;
+    border-style: solid;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.5rem;
+}
+
 #catButton {
     background-image: url("./images/catclickface.svg");
     border: none;
