@@ -203,7 +203,7 @@ function pollBreakPoints() {
     }, 250)
 }
 
-let weatherState = "night"; // sunny, rainy, stormy, night
+let weatherState = "sunny"; // sunny, rainy, stormy, night
 let nightStars = null;
 let lightningFlash = false;
 let lightningFlashEndTime = 0;
@@ -227,7 +227,7 @@ function changeWeather(state) {
                 x: Math.random() * weatherCanvas.width,
                 y: Math.random() * weatherCanvas.height,
                 speed: 2 + Math.random() * 3,
-                length: 10 + Math.random() * 10,
+                length: 5 + Math.random() * 10,
             });
         }
     }
@@ -242,21 +242,21 @@ function drawWeather(timestamp) {
 
     switch (weatherState) {
         case "sunny":
+            backdropImage.src = "./images/sunnyBackdrop.png";
             let grd = wctx.createLinearGradient(0, 0, 0, weatherCanvas.height);
             grd.addColorStop(0, "#9ebfed");
             grd.addColorStop(1, "#b2ccf1");
             wctx.fillStyle = grd;
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-            backdropImage.src = "./images/sunnyBackdrop.png";
             break;
 
         case "rainy":
         case "stormy":
+            backdropImage.src = "./images/nightBackdrop.png";
             wctx.fillStyle = weatherState === "stormy" ? "#2c2c2c" : "#979797";
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-            wctx.strokeStyle = "#A3D5FF";
-            wctx.lineWidth = 1;
-            backdropImage.src = "./images/nightBackdrop.png";
+            wctx.strokeStyle = "#b5dbfb";
+            wctx.lineWidth = Math.random()*0.7 + 0.3;
             particlesWeather.forEach(p => {
                 wctx.beginPath();
                 wctx.moveTo(p.x, p.y);
@@ -282,9 +282,9 @@ function drawWeather(timestamp) {
             break;
 
         case "night":
+            backdropImage.src = "./images/nightBackdrop.png";
             wctx.fillStyle = "#0d1b2a";
             wctx.fillRect(0, 0, weatherCanvas.width, weatherCanvas.height);
-            backdropImage.src = "./images/nightBackdrop.png";
             if (!nightStars) {
                 nightStars = [];
                 for (let i = 0; i < 100; i++) {
