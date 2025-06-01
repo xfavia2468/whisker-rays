@@ -202,7 +202,7 @@ button:active {
     z-index: 3;
     pointer-events: none;
     bottom: 88%;
-    background-color: #e5e6fa;
+    background-color: rgba(229, 230, 250, 0.7);
     border-color: #1f1a3b;
     border-width: 4px;
     border-radius: 8px;
@@ -210,6 +210,8 @@ button:active {
     padding-left: 10px;
     padding-right: 10px;
     font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
 }
 
 #catButton {

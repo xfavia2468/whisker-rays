@@ -44,6 +44,8 @@ const catTexts = [cat1Text, cat2Text, cat3Text, cat4Text, cat5Text, cat6Text, ca
     cat8Text];
 const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, cat8Row];
 
+const weatherCooldown = 120;
+
 // Laser pointer = 0 ;
 const upgradePrices = [50, 250];
 const upgradeBreakPoints = [25, 100];
@@ -71,17 +73,18 @@ document.getElementById('catButton').addEventListener('click', (e) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const pawEmojis = ['🐾', '🐱', '😺', '😻'];
+    const pawEmojis = ['🐾', '🐱', '😺', '😻', `+${generateMeowsPerClick()}`];
     const randomEmoji = pawEmojis[Math.floor(Math.random() * pawEmojis.length)];
-    for (let i = 0; i < 1; i++) { // spawn 1 per click
-        paws.push({
-            x: x + Math.random() * 80 - 50,
-            y: y + Math.random() * 20 - 10,
-            opacity: 1,
-            speed: 2 + Math.random(),
-            size: 24 + Math.random() * 16,
-            emoji: randomEmoji
-        });
+    paws.push({
+        x: x + Math.random() * 80 - 50,
+        y: y + Math.random() * 20 - 10,
+        opacity: 1,
+        speed: 2 + Math.random(),
+        size: 24 + Math.random() * 16,
+        emoji: randomEmoji
+    });
+    if (paws.length > 7) {
+        paws.shift(); // remove the oldest paw (first in the array)
     }
 });
 function draw() {
@@ -131,12 +134,10 @@ function catClicked() {
 
 function generateMeowsPerSecondBase() {
     let total = 0;
-    for (let i = 0; i < catQuantities.length; i++) {
+    for (let i = 1; i <= catQuantities.length; i++) {
         let mps = catMps[i];
 
-        if (i === 0 && upgradeActive[1] === 1) mps *= 2; // yarn ball
-
-        total += catQuantities[i] * mps;
+        total += getTierMps(i)
     }
     return total;
 }
@@ -161,12 +162,20 @@ function getClicksPerSecond() {
 
 function getCatCost(tier, quantityOwned) {
   const base = catBasePrices[tier-1];
-  const scaling = 1.15; // can tweak between 1.07–1.25
-  return Math.floor(base * Math.pow(scaling, quantityOwned));
+  const scaling = 1.15;
+
+  let weatherScaling = 1.0;
+  if (weatherState === "rainy") weatherScaling = 0.5;
+
+  return Math.floor((base * Math.pow(scaling, quantityOwned)) * weatherScaling);
 }
 
 function getTierMps(tier) {
-  return catQuantities[tier - 1] * catMps[tier - 1];
+    let multiplier = 1.0
+    let weatherMultiplier = 1.0;
+    if (weatherState === "stormy") weatherMultiplier = 2.0;
+    if (tier === 1 && upgradeActive[1] === 1) multiplier *= 2; // yarn ball
+  return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier;
 }
 
 function generateMeowsPerClick() {
@@ -176,8 +185,10 @@ function generateMeowsPerClick() {
 
     //laser pointer
     if (upgradeActive[0] === 1) multiplicativeMultipliers *= 2;
+    //weather
+    if (weatherState === "night") additiveMultipliers += 1;
 
-    return (base * multiplicativeMultipliers) + additiveMultipliers;
+    return (base + additiveMultipliers) * multiplicativeMultipliers;
 }
 
 function updateUpgradeRows(index) {
@@ -206,6 +217,7 @@ function pollBreakPoints() {
 let weatherState = "sunny"; // sunny, rainy, stormy, night
 let nightStars = null;
 let lightningFlash = false;
+let timeUntilWeatherChange = weatherCooldown;
 let lightningFlashEndTime = 0;
 const backdropImage = document.getElementById("backdropImage");
 const weatherCanvas = document.getElementById("weatherCanvas");
@@ -315,13 +327,69 @@ function animateWeather(timestamp) {
     requestAnimationFrame(animateWeather);
 }
 
+
 function cycleWeather() {
-    const weatherCycle = ["sunny", "rainy", "stormy", "night"];
-    let currentIndex = 0;
+    const weatherCycle = ["rainy", "stormy", "night"];
+    const weatherOdds = [2,1,3];
+
+    if (weatherState !== "sunny") {
+        weatherState = "sunny";
+    }
+    else {
+        const totalWeight = weatherOdds.reduce((a, b) => a + b, 0);
+        let random = Math.random() * totalWeight;
+
+        for (let i = 0; i < weatherCycle.length; i++) {
+            random -= weatherOdds[i];
+            if (random < 0) {
+                changeWeather(weatherCycle[i]);
+                updateWeatherTimer();
+                break;
+            }
+        }
+    }
+}
+
+function weatherTimer() {
     setInterval(() => {
-        currentIndex = (currentIndex + 1) % weatherCycle.length;
-        changeWeather(weatherCycle[currentIndex]);
-    }, 3000);
+        timeUntilWeatherChange -= 1;
+        updateWeatherTimer();
+        if (timeUntilWeatherChange <= 0) {
+            timeUntilWeatherChange = weatherCooldown;
+            cycleWeather();
+        }
+    }, 50);
+}
+
+function updateWeatherTimer() {
+    let timer = secondsToMinutesSeconds(timeUntilWeatherChange);
+    let vanityWeather = weatherState.charAt(0).toUpperCase() + weatherState.slice(1);
+    let vanityDescription = "";
+    switch (weatherState) {
+        case "sunny":
+            vanityDescription = "";
+            break;
+        case "rainy":
+            vanityDescription = " | Cats are 50% off!";
+            break;
+        case "stormy":
+            vanityDescription = " | Boosts cat Ⲙps x2";
+            break;
+        case "night":
+            vanityDescription = " | Gain an additional Ⲙ per click";
+            break;
+    }
+
+    weatherText.innerText = vanityWeather + " | " + "Changes in " + timer + vanityDescription;
+}
+
+function secondsToMinutesSeconds(seconds) {
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    if (seconds < 10) {
+        return ""+minutes+":0"+seconds;
+    }
+    return ""+minutes+":"+seconds;
 }
 
 function main(){
@@ -330,9 +398,10 @@ function main(){
     addMeowsPerSecondBase()
     pollBreakPoints();
     draw();
+    updateWeatherTimer();
     animateWeather();
     requestAnimationFrame(animateWeather);
-    cycleWeather();
+    weatherTimer();
 }
 main();
 
@@ -346,18 +415,18 @@ let isDevMode = true; // WILL DETERMINE IF CHEATS ARE ON
 if (isDevMode) {
 
     window.help = function () {
-        console.log("Commands:\naddMeows(amount);\nsetMeows(amount);\ngiveCats(tier, quantity);\n" +
-            "unlockUpgrades();");
+        console.log("Commands:\naddMeows(amount)\nsetMeows(amount)\ngiveCats(tier, quantity)\n" +
+            "allCats()\nunlockUpgrades()\nsetWeather(weather)");
     }
 
     window.addMeows = function (amount) {
         totalMeows += amount;
-        console.log('Added ${amount} meows. Total: ${totalMeows}');
+        console.log(`Added ${amount} meows. Total: ${totalMeows}`);
     };
 
     window.setMeows = function (amount) {
         totalMeows = amount;
-        console.log('Set total meows to ${totalMeows}');
+        console.log(`Set total meows to ${totalMeows}`);
     };
 
     window.giveCats = function (tier, quantity) {
@@ -366,7 +435,7 @@ if (isDevMode) {
             return;
         }
         catQuantities[tier - 1] += quantity;
-        console.log('Gave ${quantity} Cat ${tier}. Owned now: ${catQuantities[tier - 1]}');
+        console.log(`Gave ${quantity} Cat ${tier}. Owned now: ${catQuantities[tier - 1]}`);
     };
 
     window.unlockUpgrades = function () {
@@ -383,6 +452,10 @@ if (isDevMode) {
             catQuantities[i] += quantity;
         }
         console.log(`Gave ${quantity} of all Cats`);
+    }
+
+    window.setWeather = function (weather) {
+        changeWeather(weather);
     }
 
     help();
