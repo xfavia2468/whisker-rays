@@ -28,6 +28,13 @@ const cat6Row = document.getElementById("cat6row");
 const cat7Row = document.getElementById("cat7row");
 const cat8Row = document.getElementById("cat8row");
 
+const settingsButton = document.getElementById('settingsButton');
+const settingsMenu = document.getElementById('settingsMenu');
+const closeSettings = document.getElementById('closeSettings');
+const mpsCounterCheckbox = document.getElementById('enableMpsCounter');
+const musicVolumeSlider = document.getElementById('musicVolume');
+const sfxVolumeSlider = document.getElementById('sfxVolume');
+
 const laserPointerRow = document.getElementById("laserpointerrow");
 const yarnBallRow = document.getElementById("yarnballrow");
 
@@ -52,10 +59,18 @@ const upgradeBreakPoints = [25, 100];
 const upgradeActive = [0, 0];
 const upgradeRows = [laserPointerRow, yarnBallRow];
 
+let musicVolume = 100;
+let sfxVolume = 100;
+let mpsCounterOn = true;
+const meowSounds = ["./audio/meow1.mp3","./audio/meow2.mp3","./audio/meow3.mp3"]
 
 function updateMeowsCounter() {
-    meowsCounter.innerText = "Meows (Ⲙ): " + Math.floor(totalMeows) + " | Ⲙps: " +
+    let mpsText = "";
+    if (mpsCounterOn) {
+        mpsText = " | Ⲙps: " +
         Math.floor(generateMeowsPerSecond());
+    }
+    meowsCounter.innerText = "Meows (Ⲙ): " + Math.floor(totalMeows) + mpsText;
     requestAnimationFrame(updateMeowsCounter);
 }
 
@@ -79,7 +94,7 @@ document.getElementById('catButton').addEventListener('click', (e) => {
         x: x + Math.random() * 80 - 50,
         y: y + Math.random() * 20 - 10,
         opacity: 1,
-        speed: 2 + Math.random(),
+        speed: 4 + Math.random(),
         size: 24 + Math.random() * 16,
         emoji: randomEmoji
     });
@@ -95,7 +110,7 @@ function draw() {
         ectx.font = `${p.size}px Patrick Hand, sans-serif`;
         ectx.fillText(p.emoji, p.x, p.y);
         p.y -= p.speed;
-        p.opacity -= 0.01;
+        p.opacity -= 0.05;
         if (p.opacity <= 0) paws.splice(i, 1);
     }
     ectx.globalAlpha = 1;
@@ -128,6 +143,7 @@ function catClicked() {
     if (now - lastClickTime < 100) return;
     lastClickTime = now;
     clickTimestamps.push(now);
+    playMeow();
 
     totalMeows += generateMeowsPerClick();
 }
@@ -135,8 +151,6 @@ function catClicked() {
 function generateMeowsPerSecondBase() {
     let total = 0;
     for (let i = 1; i <= catQuantities.length; i++) {
-        let mps = catMps[i];
-
         total += getTierMps(i)
     }
     return total;
@@ -392,6 +406,43 @@ function secondsToMinutesSeconds(seconds) {
     return ""+minutes+":"+seconds;
 }
 
+settingsButton.addEventListener('click', () => {
+    settingsMenu.classList.toggle('hidden');
+});
+
+closeSettings.addEventListener('click', () => {
+    settingsMenu.classList.add('hidden');
+});
+
+mpsCounterCheckbox.addEventListener('change', () => {
+    if (mpsCounterCheckbox.checked) {
+        mpsCounterOn = true;
+        console.log('Ⲙps counter enabled');
+    } else {
+        mpsCounterOn = false;
+        console.log('Ⲙps counter disabled');
+    }
+});
+
+musicVolumeSlider.addEventListener('input', () => {
+    const volume = parseInt(musicVolumeSlider.value);
+    musicVolume = volume;
+    console.log(`Music volume: ${volume}`);
+});
+
+sfxVolumeSlider.addEventListener('input', () => {
+    const volume = parseInt(sfxVolumeSlider.value);
+    sfxVolume = volume;
+    console.log(`SFX volume: ${volume}`);
+});
+
+function playMeow() {
+    let meowToPlay = meowSounds[Math.floor(Math.random() * meowSounds.length)];
+    const meow = new Audio(meowToPlay);
+    meow.volume = sfxVolume / 100;
+    meow.play();
+}
+
 function main(){
     updateMeowsCounter();
     updateCatShop();
@@ -400,7 +451,6 @@ function main(){
     draw();
     updateWeatherTimer();
     animateWeather();
-    requestAnimationFrame(animateWeather);
     weatherTimer();
 }
 main();

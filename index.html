@@ -16,7 +16,7 @@
     <main>
         <h2 id="meowsCounter">Meows (Ⲙ): 0</h2>
 
-        <div class="grid">
+            <div class="grid" style="background-image: url('./images/kittylitter.jpg');">
             <!-- LEFT SHOP PART-->
             <div class="container" >
                 <p class="subtitletext">Buy cats</p>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- MIDDLE WINDOW PART-->
-            <div style="display: flex; flex-direction: column;" id="midwindow">
+            <div id="midwindow">
                 <div id="catclickwindow" class="window">
                     <canvas id="pawEffectCanvas"></canvas>
                     <p id="weatherText">Weather Text!</p>
@@ -72,7 +72,7 @@
                     <button id="catButton" onclick="catClicked()"></button>
                 </div>
 
-                <div class="window" style="height: 25vh">
+                <div class="window" style="height: 24.8%">
                     <p class="subtitletext">Nine Lives Mode</p>
                 </div>
             </div>
@@ -82,25 +82,38 @@
                 <p class="subtitletext">Buy upgrades</p>
                 <div id="laserpointerrow" class=" hidden upgraderow">
                     <button id="laserpointerbutton" class="upgradebutton" onclick="updateUpgradeRows(0)">
-                        <grid class="verticalgrid">
+                        <div class="verticalgrid">
                             <p id="laserpointertext" class="upgradetext"> (Ⲙ50) Laser pointer</p>
                             <p>Double Ⲙ per click</p>
-                        </grid>
+                        </div>
                         <img src="./images/laserPointer.png" alt="Laser Pointer" class="upgradepic">
                     </button>
                 </div>
                 <div id="yarnballrow" class=" hidden upgraderow">
                     <button id="yarnballbutton" class="upgradebutton" onclick="updateUpgradeRows(1)">
-                        <grid class="verticalgrid">
+                        <div class="verticalgrid">
                             <p id="yarnballtext" class="upgradetext"> (Ⲙ250) Yarn ball</p>
                             <p>Double Cat1 Ⲙps</p>
-                        </grid>
+                        </div>
                         <img src="./images/yarnball.webp" alt="yarn ball" class="upgradepic">
                     </button>
                 </div>
             </div>
 
         </div>
+
+        <div class="bottomRow">
+            <button id="settingsButton" class="bottomRowButton"></button>
+        </div>
+
+        <div id="settingsMenu" class="hidden">
+            <p class="subtitletext">Settings</p>
+            <label class="settingsText"><input type="checkbox" id="enableMpsCounter" checked> Enable Ⲙps counter</label><br>
+            <label class="settingsText"><input type="range" min="1" max="100" id="musicVolume" value="100"> Music Volume</label><br>
+            <label class="settingsText"><input type="range" min="1" max="100" id="sfxVolume" value="100"> SFX Volume</label><br>
+            <button id="closeSettings">Close</button>
+        </div>
+
     </main>
 
 </body>
