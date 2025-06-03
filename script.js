@@ -37,6 +37,9 @@ const sfxVolumeSlider = document.getElementById('sfxVolume');
 
 const laserPointerRow = document.getElementById("laserpointerrow");
 const yarnBallRow = document.getElementById("yarnballrow");
+const toyMouseRow = document.getElementById("toymouserow");
+const catBedRow = document.getElementById("catbedrow");
+const cardboardRow = document.getElementById("cardboardrow");
 
 let totalMeows = 0;
 let clickTimestamps = [];
@@ -54,10 +57,10 @@ const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, 
 const weatherCooldown = 120;
 
 // Laser pointer = 0 ;
-const upgradePrices = [50, 250];
-const upgradeBreakPoints = [25, 100];
-const upgradeActive = [0, 0];
-const upgradeRows = [laserPointerRow, yarnBallRow];
+const upgradePrices = [50, 250, 150, 300, 1500];
+const upgradeBreakPoints = [25, 100, 75, 200, 1000];
+const upgradeActive = [0, 0, 0, 0, 0];
+const upgradeRows = [laserPointerRow, yarnBallRow, toyMouseRow, catBedRow, cardboardRow];
 
 let musicVolume = 100;
 let sfxVolume = 100;
@@ -88,7 +91,7 @@ document.getElementById('catButton').addEventListener('click', (e) => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const pawEmojis = ['🐾', '🐱', '😺', '😻', `+${generateMeowsPerClick()}`];
+    const pawEmojis = ['🐾', '🐱', '😺', '😻', `+${Math.floor(generateMeowsPerClick())}`];
     const randomEmoji = pawEmojis[Math.floor(Math.random() * pawEmojis.length)];
     paws.push({
         x: x + Math.random() * 80 - 50,
@@ -116,7 +119,7 @@ function draw() {
     ectx.globalAlpha = 1;
     requestAnimationFrame(draw);
 }
-/*     */
+
 
 function updateCatShop() {
     for (let i = 0; i < catQuantities.length; i++) {
@@ -185,11 +188,12 @@ function getCatCost(tier, quantityOwned) {
 }
 
 function getTierMps(tier) {
-    let multiplier = 1.0
+    let multiplier = 1.0;
     let weatherMultiplier = 1.0;
     if (weatherState === "stormy") weatherMultiplier = 2.0;
+    if (weatherState === "rainy" && upgradeActive[3] === 1) weatherMultiplier *= 1.1; // cat bed rain bonus
     if (tier === 1 && upgradeActive[1] === 1) multiplier *= 2; // yarn ball
-  return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier;
+    return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier;
 }
 
 function generateMeowsPerClick() {
@@ -199,6 +203,16 @@ function generateMeowsPerClick() {
 
     //laser pointer
     if (upgradeActive[0] === 1) multiplicativeMultipliers *= 2;
+    //toy mouse
+    if (upgradeActive[2] === 1) additiveMultipliers += 1;
+    //cardboard box
+    if (upgradeActive[4] === 1) {
+        let uniqueCatTypes = 0;
+        for (let i = 0; i < catQuantities.length; i++) {
+            if (catQuantities[i] > 0) uniqueCatTypes++;
+        }
+        multiplicativeMultipliers *= (1 + (0.05 * uniqueCatTypes));
+    }
     //weather
     if (weatherState === "night") additiveMultipliers += 1;
 
@@ -231,7 +245,7 @@ function pollBreakPoints() {
 let weatherState = "sunny"; // sunny, rainy, stormy, night
 let nightStars = null;
 let lightningFlash = false;
-let timeUntilWeatherChange = weatherCooldown;
+let timeUntilWeatherChange = 30;
 let lightningFlashEndTime = 0;
 const backdropImage = document.getElementById("backdropImage");
 const weatherCanvas = document.getElementById("weatherCanvas");
