@@ -9,14 +9,16 @@
 <body>
 
     <header>
-        <h1 style="margin-bottom: 5px; margin-top: 5px;" class="title">🐾CAT CLICKER🐾</h1>
-        <hr style="margin-top: 5px; border-color: #2e1f5e;">
+        <div class="titleRow">
+            <h1 class="title">🐾CAT CLICKER🐾</h1>
+        </div>
     </header>
 
+    <div class="background"></div>
     <main>
-        <h2 id="meowsCounter">Meows (Ⲙ): 0</h2>
+            <h2 id="meowsCounter">Meows (Ⲙ): 0</h2>
 
-            <div class="grid" style="background-image: url('./images/kittylitter.jpg');">
+            <div class="grid">
             <!-- LEFT SHOP PART-->
             <div class="container" >
                 <p class="subtitletext">Buy cats</p>
@@ -72,7 +74,7 @@
                     <button id="catButton" onclick="catClicked()"></button>
                 </div>
 
-                <div class="window" style="height: 24.8%">
+                <div class="window">
                     <p class="subtitletext">Nine Lives Mode</p>
                 </div>
             </div>

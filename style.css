@@ -1,17 +1,39 @@
 /* Import fonts from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Chewy&family=Patrick+Hand&display=swap');
 
+.titleRow {
+    display: flex;
+    flex-direction: row;
+    background-color: #F4F0FA;
+    border: 3px solid #2e1f5e;
+    border-radius: 8px;
+}
+
+.background {
+    background-image: url('./images/yarn3.jpg');
+    position: fixed;
+    top: 124px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: top;
+    z-index: -1;
+    border-top: 3px solid #2e1f5e;
+    box-shadow: 0 0 200px rgba(0,0,0,0.9) inset;
+}
+
 .container {
     margin: 0px;
     padding: 5px;
-    overflow-y: auto; /* Vertical scroll */
+    overflow-y: auto;
     display: flex;
-    flex-direction: column; /* stack children vertically */
+    flex-direction: column;
     justify-content: flex-start;
-    height: 80vh; /* fill viewport height */
+    height: 100%;
     box-sizing: border-box;
-    background-color: #F4F0FA; /* Lavender Mist */
-    border: 2px solid #2e1f5e;
+    background-color: #F4F0FA;
+    border: 3px solid #2e1f5e;
     box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.4);
     border-radius: 8px;
 }
@@ -19,7 +41,7 @@
 .window {
     padding: 5px;
     background-color: #F4F0FA; /* Lavender Mist */
-    border: 2px solid #2e1f5e;
+    border: 3px solid #2e1f5e;
     box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.4);
     border-radius: 8px;
 }
@@ -27,7 +49,7 @@
 .grid {
     display: grid;
     grid-template-columns: 5fr 6fr 4fr;
-    height: 84vh;
+    height: 80vh;
     column-gap: 2vh;
     scrollbar-color: #B8E0FF #ECE7F6;
     scrollbar-width: thin;
@@ -49,12 +71,13 @@
     row-gap: 0;
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 .bottomRow {
     position: fixed;
     z-index: 4;
-    bottom: 5px;
+    bottom: 3px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -62,11 +85,11 @@
 }
 
 .bottomRowButton {
-    margin: 2px;
+    margin: 0;
     width: 10px;
     display: inline-block;
     height: 20%;
-    background-color: Transparent;
+    background-color: lavender;
     background-size: 90%;
     background-repeat: no-repeat;
     background-position: center;
@@ -81,7 +104,7 @@
     bottom: 5%;
     right: 80%;
     background: #F4F0FA;
-    border: 2px solid #2e1f5e;
+    border: 3px solid #2e1f5e;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 1001;
@@ -96,6 +119,8 @@
     font-family: 'Patrick Hand', cursive;
     font-weight: bold;
     font-size: 2rem;
+    margin-bottom: 3px;
+    margin-top: 3px;
 }
 
 .subtitletext {
@@ -210,7 +235,7 @@ button:active {
 }
 
 #catclickwindow {
-    height: 54vh;
+    height: 70%;
     margin-bottom: 2vh;
     position: relative;
     display: flex;
@@ -308,6 +333,9 @@ button:active {
 }
 /* Nine lives */
 #midwindow > div:nth-child(2) {
+    height: 30%;
+    margin: 0;
+    padding: 0;
     background: linear-gradient(to right, #fdf7f3, #f8ecda);
 }
 /* Upgrade shop */
