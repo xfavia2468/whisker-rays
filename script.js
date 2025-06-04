@@ -1,5 +1,72 @@
 (function () {
 
+class Tooltip {
+    constructor() {
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'js-tooltip';
+        this.tooltip.style.display = 'none';
+        document.body.appendChild(this.tooltip);
+        
+        // Bind methods
+        this.show = this.show.bind(this);
+        this.hide = this.hide.bind(this);
+        this.move = this.move.bind(this);
+    }
+
+    show(event, content) {
+        this.tooltip.innerHTML = content;
+        this.tooltip.style.display = 'block';
+        this.move(event);
+    }
+
+    hide() {
+        this.tooltip.style.display = 'none';
+    }
+
+    move(event) {
+        const margin = 15;
+        const tooltipRect = this.tooltip.getBoundingClientRect();
+        
+        // Calculate position
+        let x = event.clientX + margin;
+        let y = event.clientY + margin;
+
+        // Check if tooltip would go off screen
+        if (x + tooltipRect.width > window.innerWidth) {
+            x = event.clientX - tooltipRect.width - margin;
+        }
+        if (y + tooltipRect.height > window.innerHeight) {
+            y = event.clientY - tooltipRect.height - margin;
+        }
+
+        this.tooltip.style.left = `${x}px`;
+        this.tooltip.style.top = `${y}px`;
+    }
+
+    init() {
+        const tooltipElements = document.querySelectorAll('[data-tooltip]');
+        
+        tooltipElements.forEach(element => {
+            element.addEventListener('mouseenter', (e) => {
+                const title = element.getAttribute('data-tooltip-title') || '';
+                const description = element.getAttribute('data-tooltip-description') || '';
+                const content = `
+                    <div class="tooltip-title">${title}</div>
+                    <div class="tooltip-description">${description}</div>
+                `;
+                this.show(e, content);
+            });
+
+            element.addEventListener('mousemove', this.move);
+            element.addEventListener('mouseleave', this.hide);
+        });
+    }
+}
+
+// Create and initialize tooltip instance
+const tooltip = new Tooltip();
+document.addEventListener('DOMContentLoaded', () => tooltip.init());
+
 const meowsCounter = document.getElementById("meowsCounter");
 const pawEffectCanvas = document.getElementById("pawEffectCanvas");
 
