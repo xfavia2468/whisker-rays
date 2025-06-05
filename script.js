@@ -530,7 +530,7 @@ function weatherTimer() {
             timeUntilWeatherChange = weatherCooldown;
             cycleWeather();
         }
-    }, 50);
+    }, 1000);
 }
 
 function updateWeatherTimer() {
@@ -848,7 +848,6 @@ function initLoadingScreen() {
         await updateNineLivesDisplay();
         setInterval(updateNineLivesDisplay, 1000);
         await new Promise(resolve => setTimeout(resolve, 100));
-        timeUntilWeatherChange = 40;
         updateProgress(100, "Starting Game...");
 
         // Final delay to ensure smooth transition
