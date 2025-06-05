@@ -800,7 +800,8 @@ function initLoadingScreen() {
     const loadingScreen = document.getElementById('loadingScreen');
     const loadingBar = document.getElementById('loadingBar');
     const loadingText = loadingScreen.querySelector('h2');
-    const totalResources = document.images.length + 1; // +1 for background music
+    const imageList = Array.from(document.images); // lock snapshot
+    const totalResources = imageList.length + 1; // +1 for bg music
     let loadedResources = 0;
 
     function updateProgress(progress, text = null) {
@@ -810,11 +811,13 @@ function initLoadingScreen() {
         }
     }
 
+    let gameInitialized = false;
     function updateResourceProgress() {
         const progress = (loadedResources / totalResources) * 50; // Resources are first 50%
         updateProgress(progress, "Loading Resources...");
-        
-        if (loadedResources >= totalResources) {
+        console.log(loadedResources); //////////////////aaa
+        if (loadedResources >= totalResources && !gameInitialized) {
+            gameInitialized = true;
             initializeGame();
         }
     }
@@ -860,22 +863,22 @@ function initLoadingScreen() {
     }
 
     // Track image loading
-    Array.from(document.images).forEach(img => {
+    imageList.forEach(img => {
         if (img.complete) {
             loadedResources++;
             updateResourceProgress();
         } else {
-            img.addEventListener('load', () => {
+            const onLoadOrError = () => {
+                img.removeEventListener('load', onLoadOrError);
+                img.removeEventListener('error', onLoadOrError);
                 loadedResources++;
                 updateResourceProgress();
-            });
-            img.addEventListener('error', () => {
-                loadedResources++;
-                updateResourceProgress();
-                console.error('Failed to load image:', img.src);
-            });
+            };
+            img.addEventListener('load', onLoadOrError);
+            img.addEventListener('error', onLoadOrError);
         }
     });
+
 
     // Track audio loading
     function preloadAudio(url) {
