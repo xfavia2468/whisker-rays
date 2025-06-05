@@ -7,6 +7,13 @@
     <script src="./script.js" defer></script>
 </head>
 <body>
+    <div id="loadingScreen" class="loading-screen">
+        <h2>Loading Cat Clicker...</h2>
+        <img src="./images/cat1.jpg" alt="Loading Cat" class="loading-cat">
+        <div class="loading-progress">
+            <div id="loadingBar" class="loading-bar"></div>
+        </div>
+    </div>
 
     <header>
         <div class="titleRow">
@@ -75,7 +82,10 @@
                 </div>
 
                 <div class="window">
-                    <p class="subtitletext">Nine Lives Mode</p>
+                    <p class="subtitletext" style="margin-bottom: 0;">Nine Lives Mode</p>
+                    <div id="nineLivesInfo" class="nineLivesContainer">
+                        
+                    </div>
                 </div>
             </div>
 
@@ -106,7 +116,7 @@
                             <p id="toymousetext" class="upgradetext"> (Ⲙ150) Toy Mouse</p>
                             <p>+1 Ⲙ per click</p>
                         </div>
-                        <img src="./images/toyMouse.png" alt="Toy Mouse" class="upgradepic">
+                        <img src="./images/toyMouse.webp" alt="Toy Mouse" class="upgradepic">
                     </button>
                 </div>
                 <div id="catbedrow" class="hidden upgraderow">
@@ -133,14 +143,43 @@
 
         <div class="bottomRow">
             <button id="settingsButton" class="bottomRowButton"></button>
+            <button id="statsButton" class="bottomRowButton"></button>
         </div>
 
         <div id="settingsMenu" class="hidden">
             <p class="subtitletext">Settings</p>
             <label class="settingsText"><input type="checkbox" id="enableMpsCounter" checked> Enable Ⲙps counter</label><br>
-            <label class="settingsText"><input type="range" min="1" max="100" id="musicVolume" value="100"> Music Volume</label><br>
-            <label class="settingsText"><input type="range" min="1" max="100" id="sfxVolume" value="100"> SFX Volume</label><br>
+            <label class="settingsText"><input type="range" min="1" max="100" id="musicVolume" value="50"> Music Volume</label><br>
+            <label class="settingsText"><input type="range" min="1" max="100" id="sfxVolume" value="75"> SFX Volume</label><br>
+            <button id="resetAllButton" class="dangerButton">Reset All Progress</button><br>
             <button id="closeSettings">Close</button>
+        </div>
+
+        <div id="statsMenu" class="hidden">
+            <p class="subtitletext">Statistics</p>
+            <div class="statsGrid">
+                <div class="statCategory">
+                    <h3>Production</h3>
+                    <p>Total Meows Generated: <span id="totalMeowsGenerated">0</span></p>
+                    <p>Meows from Clicks: <span id="meowsFromClicks">0</span></p>
+                    <p>Meows from Cats: <span id="meowsFromCats">0</span></p>
+                    <p>Current Click Value: <span id="currentClickValue">1</span></p>
+                </div>
+                <div class="statCategory">
+                    <h3>Multipliers</h3>
+                    <p>Click Multiplier: <span id="clickMultiplier">1x</span></p>
+                    <p>Cat Production: <span id="catMultiplier">1x</span></p>
+                    <p>Weather Bonus: <span id="weatherMultiplier">1x</span></p>
+                    <p>Catnip Bonus: <span id="catnipMultiplierStat">1x</span></p>
+                </div>
+                <div class="statCategory">
+                    <h3>Time Stats</h3>
+                    <p>Total Playtime: <span id="totalPlaytime">0:00:00</span></p>
+                    <p>Total Clicks: <span id="totalClicks">0</span></p>
+                    <p>Best MPS: <span id="bestMps">0</span></p>
+                </div>
+            </div>
+            <button id="closeStats">Close</button>
         </div>
 
     </main>

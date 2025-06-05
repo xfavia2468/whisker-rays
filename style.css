@@ -51,7 +51,7 @@
 .grid {
     display: grid;
     grid-template-columns: 5fr 6fr 4fr;
-    height: 80vh;
+    height: 79vh;
     column-gap: 2vh;
     scrollbar-color: #B8E0FF #ECE7F6;
     scrollbar-width: thin;
@@ -273,7 +273,7 @@ button:active {
 }
 
 #catclickwindow {
-    height: 70%;
+    height: 75%;
     margin-bottom: 2vh;
     position: relative;
     display: flex;
@@ -371,7 +371,7 @@ button:active {
 }
 /* Nine lives */
 #midwindow > div:nth-child(2) {
-    height: 30%;
+    height: 25%;
     margin: 0;
     padding: 0;
     background: linear-gradient(to right, #fdf7f3, #f8ecda);
@@ -379,5 +379,199 @@ button:active {
 /* Upgrade shop */
 .grid > div:nth-child(3) {
     background: linear-gradient(to right, #eaf2ff, #dce9ff);
+}
+
+.nineLivesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: center;
+    padding: 3px;
+    text-align: center;
+}
+
+.nineLivesStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.nineLivesStat {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px;
+}
+
+.nineLivesStat p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #2e1f5e;
+}
+
+.nineLivesStat span {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff4d94;
+}
+
+.nineLivesButton {
+    background-color: #ff9ecd;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    transition: all 0.3s ease;
+    min-width: 50%;
+    width: auto;
+}
+
+.nineLivesButton:not([disabled]):hover {
+    background-color: #ff7eb6;
+    transform: scale(1.05);
+}
+
+.nineLivesButton[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#catnipBonusText, #catnipOnResetText {
+    font-weight: bold;
+    color: #ff4d94;
+}
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease-out;
+}
+
+.loading-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-screen h2 {
+    color: #B8E0FF;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-family: 'Patrick Hand', sans-serif;
+}
+
+.loading-cat {
+    width: 100px;
+    height: 100px;
+    animation: bounce 1s infinite;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 20px;
+    background: #333;
+    border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background: #B8E0FF;
+    transition: width 0.3s ease;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.dangerButton {
+    background-color: #ff4d4d;
+    color: white;
+    margin: 10px 0;
+    font-size: 1.0rem;
+    padding: 5px 10px;
+}
+
+.dangerButton:hover {
+    background-color: #ff3333;
+    color: white;
+}
+
+.dangerButton:active {
+    background-color: #cc0000;
+    color: white;
+}
+
+#statsButton {
+    background-image: url("./images/stats.png");
+    margin-left: 10px;
+}
+
+#statsMenu {
+    position: fixed;
+    bottom: 5%;
+    right: 73%;
+    min-width: 300px;
+    background: #F4F0FA;
+    border: 3px solid #2e1f5e;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    padding: 8px 16px 16px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-color: #B8E0FF #ECE7F6;
+    scrollbar-width: thin;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin: 15px 0;
+    width: 100%;
+}
+
+.statCategory {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #2e1f5e;
+}
+
+.statCategory h3 {
+    font-family: 'Patrick Hand', cursive;
+    color: #2e1f5e;
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #2e1f5e;
+}
+
+.statCategory p {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.statCategory span {
+    font-weight: bold;
+    color: #ff4d94;
 }
 

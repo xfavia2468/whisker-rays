@@ -66,6 +66,7 @@ class Tooltip {
 // Create and initialize tooltip instance
 const tooltip = new Tooltip();
 document.addEventListener('DOMContentLoaded', () => tooltip.init());
+window.reinitTooltips = () => tooltip.init();  // Add reinitialization function
 
 const meowsCounter = document.getElementById("meowsCounter");
 const pawEffectCanvas = document.getElementById("pawEffectCanvas");
@@ -123,16 +124,85 @@ const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, 
 
 const weatherCooldown = 120;
 
-// Laser pointer = 0 ;
 const upgradePrices = [50, 250, 150, 300, 1500];
 const upgradeBreakPoints = [25, 100, 75, 200, 1000];
 const upgradeActive = [0, 0, 0, 0, 0];
 const upgradeRows = [laserPointerRow, yarnBallRow, toyMouseRow, catBedRow, cardboardRow];
 
-let musicVolume = 100;
-let sfxVolume = 100;
+let musicVolume = 50;
+let backgroundMusic = new Audio("./audio/background-music.mp3");
+let musicEnabled = true;
+let sfxVolume = 75;
 let mpsCounterOn = true;
 const meowSounds = ["./audio/meow1.mp3","./audio/meow2.mp3","./audio/meow3.mp3"]
+
+const BASE_NINE_LIVES_REQUIREMENT = 1000000;
+let totalCatnip = 0;
+let catnipMultiplier = 1;
+
+const nineLivesButton = document.getElementById('nineLivesButton');
+const catnipBonusText = document.getElementById('catnipBonusText');
+const catnipOnResetText = document.getElementById('catnipOnResetText');
+
+const resetAllButton = document.getElementById('resetAllButton');
+
+const statsButton = document.getElementById('statsButton');
+const statsMenu = document.getElementById('statsMenu');
+const closeStats = document.getElementById('closeStats');
+
+let gameStartTime = Date.now();
+let totalMeowsGenerated = 0;
+let meowsFromClicks = 0;
+let meowsFromCats = 0;
+let totalClicks = 0;
+let bestMps = 0;
+
+function initBackgroundMusic() {
+    return new Promise((resolve) => {
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = musicVolume / 200;
+
+        // Start playing immediately if volume > 0
+        if (musicEnabled && musicVolume > 0) {
+            document.addEventListener('click', () => {
+                if (backgroundMusic && !backgroundMusic.playing && musicEnabled) {
+                    backgroundMusic.play();
+                }
+            }, { once: true });
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (backgroundMusic) {
+                    backgroundMusic.pause();
+                }
+            } else {
+                if (backgroundMusic && musicEnabled && musicVolume > 0) {
+                    backgroundMusic.play();
+                }
+            }
+        });
+
+        // Resolve immediately since dont need to wait for user interaction
+        resolve();
+    });
+}
+
+musicVolumeSlider.addEventListener('input', () => {
+    const volume = parseInt(musicVolumeSlider.value);
+    musicVolume = volume;
+    if (backgroundMusic) {
+        backgroundMusic.volume = volume / 200;
+        if (volume === 0) {
+            backgroundMusic.pause();
+            musicEnabled = false;
+        } else if (!backgroundMusic.playing && !document.hidden && musicEnabled) {
+            backgroundMusic.play();
+            musicEnabled = true;
+        }
+    }
+    console.log(`Music volume: ${volume}`);
+});
 
 function updateMeowsCounter() {
     let mpsText = "";
@@ -191,7 +261,7 @@ function draw() {
 function updateCatShop() {
     for (let i = 0; i < catQuantities.length; i++) {
         buyCatButtons[i].innerText = `BUY: (Ⲙ) ${getCatCost(i + 1, catQuantities[i])}`;
-        catTexts[i].innerText = `Cat ${i + 1} : ${catQuantities[i]} Owned : ${getTierMps(i + 1)} Ⲙps`;
+        catTexts[i].innerText = `Cat ${i + 1} : ${catQuantities[i]} Owned : ${Math.floor(getTierMps(i + 1))} Ⲙps`;
         if (i > 0 && catQuantities[i - 1] > 0) {
             catRows[i].classList.remove("hidden");
         }
@@ -215,7 +285,11 @@ function catClicked() {
     clickTimestamps.push(now);
     playMeow();
 
-    totalMeows += generateMeowsPerClick();
+    const clickValue = generateMeowsPerClick();
+    totalMeows += clickValue;
+    totalMeowsGenerated += clickValue;
+    meowsFromClicks += clickValue;
+    totalClicks++;
 }
 
 function generateMeowsPerSecondBase() {
@@ -228,7 +302,10 @@ function generateMeowsPerSecondBase() {
 
 function addMeowsPerSecondBase() {
     setInterval(() => {
-        totalMeows += generateMeowsPerSecondBase() / 20;
+        const mpsValue = generateMeowsPerSecondBase() / 20;
+        totalMeows += mpsValue;
+        totalMeowsGenerated += mpsValue;
+        meowsFromCats += mpsValue;
     }, 50);
 }
 
@@ -260,7 +337,7 @@ function getTierMps(tier) {
     if (weatherState === "stormy") weatherMultiplier = 2.0;
     if (weatherState === "rainy" && upgradeActive[3] === 1) weatherMultiplier *= 1.1; // cat bed rain bonus
     if (tier === 1 && upgradeActive[1] === 1) multiplier *= 2; // yarn ball
-    return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier;
+    return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier * catnipMultiplier;
 }
 
 function generateMeowsPerClick() {
@@ -283,7 +360,7 @@ function generateMeowsPerClick() {
     //weather
     if (weatherState === "night") additiveMultipliers += 1;
 
-    return (base + additiveMultipliers) * multiplicativeMultipliers;
+    return ((base + additiveMultipliers) * multiplicativeMultipliers) * catnipMultiplier;
 }
 
 function updateUpgradeRows(index) {
@@ -488,7 +565,12 @@ function secondsToMinutesSeconds(seconds) {
 }
 
 settingsButton.addEventListener('click', () => {
-    settingsMenu.classList.toggle('hidden');
+    if (settingsMenu.classList.contains('hidden')) {
+        settingsMenu.classList.remove('hidden');
+        statsMenu.classList.add('hidden');
+    } else {
+        settingsMenu.classList.add('hidden');
+    }
 });
 
 closeSettings.addEventListener('click', () => {
@@ -524,18 +606,306 @@ function playMeow() {
     meow.play();
 }
 
-function main(){
-    updateMeowsCounter();
-    updateCatShop();
-    addMeowsPerSecondBase()
-    pollBreakPoints();
-    draw();
-    updateWeatherTimer();
-    animateWeather();
-    weatherTimer();
+function calculateCatnipGain() {
+    // Square root of total meows divided by 100,000 (rounded down)
+    return Math.floor(Math.sqrt(totalMeows / 100000));
 }
-main();
 
+function getNineLivesRequirement() {
+    // Each catnip makes the next reset require 50% more meows
+    return Math.floor(BASE_NINE_LIVES_REQUIREMENT * Math.pow(1.5, totalCatnip));
+}
+
+function formatLargeNumber(num) {
+    num = Math.floor(num);
+    if (num >= 1e12) return (num / 1e12).toFixed(2) + "T";
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + "B";
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
+    return num.toString();
+}
+
+function updateNineLivesDisplay() {
+    const requirement = getNineLivesRequirement();
+    const catnipGain = calculateCatnipGain();
+    const nextMilestone = Math.ceil(Math.sqrt((requirement * 100000) / Math.pow(100000, 2))) + 1;
+    const meowsForNextCatnip = Math.pow(nextMilestone, 2) * 100000;
+    const progress = ((totalMeows / meowsForNextCatnip) * 100).toFixed(1);
+    
+    document.getElementById('nineLivesInfo').innerHTML = `
+        <div class="nineLivesStats">
+            <div class="nineLivesStat">
+                <p>Current Catnip</p>
+                <span>${totalCatnip} | +${((catnipMultiplier - 1) * 100).toFixed(1)}%</span>
+            </div>
+            <div class="nineLivesStat">
+                <p>Catnip on Reset</p>
+                <span>${catnipGain}</span>
+            </div>
+            <div class="nineLivesStat">
+                <p>Progress to Next</p>
+                <span>${progress}%</span>
+            </div>
+        </div>
+        <button id="nineLivesButton" class="nineLivesButton" 
+            data-tooltip 
+            data-tooltip-title="Nine Lives Mode" 
+            data-tooltip-description="Trade your current progress for Catnip, which permanently increases all Meow production!"
+            ${totalMeows >= requirement ? '' : 'disabled'}>
+            ${totalMeows >= requirement ? `Reset for ${catnipGain} Catnip` : `Requires ${formatLargeNumber(requirement)} Meows`}
+        </button>
+    `;
+    
+    // Re-attach the click handler
+    document.getElementById('nineLivesButton').addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset? You will lose all progress but gain Catnip!')) {
+            performNineLivesReset();
+        }
+    });
+
+    // Reinitialize tooltips after updating the display
+    window.reinitTooltips();
+}
+
+function performNineLivesReset() {
+    const requirement = getNineLivesRequirement();
+    if (totalMeows < requirement) return;
+    
+    // Calculate catnip gain
+    const catnipGain = calculateCatnipGain();
+    totalCatnip += catnipGain;
+    
+    // Update multiplier (each catnip gives 1% bonus)
+    catnipMultiplier = 1 + (totalCatnip * 0.01);
+    
+    totalMeows = 0;
+    catQuantities.fill(0);
+    upgradeActive.fill(0);
+    
+    upgradeRows.forEach(row => row.classList.add('hidden'));
+    
+    for (let i = 1; i < catRows.length; i++) {
+        catRows[i].classList.add('hidden');
+    }
+    
+    const prestigeSound = new Audio('./audio/prestige.mp3');
+    prestigeSound.volume = sfxVolume / 100;
+    prestigeSound.play();
+    
+    updateNineLivesDisplay();
+}
+
+resetAllButton.addEventListener('click', () => {
+    if (confirm('Are you sure you want to reset ALL progress? This cannot be undone!')) {
+        // Reset all game variables
+        totalMeows = 0;
+        catQuantities.fill(0);
+        upgradeActive.fill(0);
+        totalCatnip = 0;
+        catnipMultiplier = 1;
+        clickTimestamps = [];
+        meowsPerSecond = 0;
+        
+        // Hide all upgrade rows
+        upgradeRows.forEach(row => row.classList.add('hidden'));
+        
+        // Hide all cat rows except the first
+        for (let i = 1; i < catRows.length; i++) {
+            catRows[i].classList.add('hidden');
+        }
+
+        // Reset weather
+        timeUntilWeatherChange = weatherCooldown;
+        changeWeather('sunny');
+        
+        const resetSound = new Audio('./audio/meow1.mp3');
+        resetSound.volume = sfxVolume / 100;
+        resetSound.play();
+        
+        // Update displays
+        updateNineLivesDisplay();
+        
+        settingsMenu.classList.add('hidden');
+        
+        // Reset stats
+        gameStartTime = Date.now();
+        totalMeowsGenerated = 0;
+        meowsFromClicks = 0;
+        meowsFromCats = 0;
+        totalClicks = 0;
+        bestMps = 0;
+        
+        updateStats();
+    }
+});
+
+// Modify the stats button event listener
+statsButton.addEventListener('click', () => {
+    if (statsMenu.classList.contains('hidden')) {
+        updateStats();
+        statsMenu.classList.remove('hidden');
+        settingsMenu.classList.add('hidden');
+    } else {
+        statsMenu.classList.add('hidden');
+    }
+});
+
+closeStats.addEventListener('click', () => {
+    statsMenu.classList.add('hidden');
+});
+
+function updateStats() {
+    // Production stats
+    document.getElementById('totalMeowsGenerated').textContent = formatLargeNumber(totalMeowsGenerated);
+    document.getElementById('meowsFromClicks').textContent = formatLargeNumber(meowsFromClicks);
+    document.getElementById('meowsFromCats').textContent = formatLargeNumber(meowsFromCats);
+    document.getElementById('currentClickValue').textContent = formatLargeNumber(generateMeowsPerClick());
+
+    // Multiplier stats
+    let clickMultiplier = 1;
+    if (upgradeActive[0]) clickMultiplier *= 2; // Laser pointer
+    if (upgradeActive[2]) clickMultiplier += 1; // Toy mouse
+    document.getElementById('clickMultiplier').textContent = clickMultiplier.toFixed(2) + 'x';
+    
+    let catMultiplier = 1;
+    if (upgradeActive[1]) catMultiplier *= 2; // Yarn ball
+    document.getElementById('catMultiplier').textContent = catMultiplier.toFixed(2) + 'x';
+    
+    let weatherMultiplier = 1;
+    if (weatherState === "stormy") weatherMultiplier = 2;
+    if (weatherState === "rainy" && upgradeActive[3]) weatherMultiplier *= 1.1;
+    document.getElementById('weatherMultiplier').textContent = weatherMultiplier.toFixed(2) + 'x';
+    
+    document.getElementById('catnipMultiplierStat').textContent = catnipMultiplier.toFixed(2) + 'x';
+
+    // Time stats
+    const playtime = Math.floor((Date.now() - gameStartTime) / 1000);
+    const hours = Math.floor(playtime / 3600);
+    const minutes = Math.floor((playtime % 3600) / 60);
+    const seconds = playtime % 60;
+    document.getElementById('totalPlaytime').textContent = 
+        `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    document.getElementById('totalClicks').textContent = totalClicks;
+    
+    const currentMps = generateMeowsPerSecond();
+    bestMps = Math.max(bestMps, currentMps);
+    document.getElementById('bestMps').textContent = formatLargeNumber(bestMps);
+}
+
+// Add stats update interval
+setInterval(updateStats, 1000);
+
+function initLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingText = loadingScreen.querySelector('h2');
+    const totalResources = document.images.length + 1; // +1 for background music
+    let loadedResources = 0;
+
+    function updateProgress(progress, text = null) {
+        loadingBar.style.width = `${progress}%`;
+        if (text) {
+            loadingText.textContent = text;
+        }
+    }
+
+    function updateResourceProgress() {
+        const progress = (loadedResources / totalResources) * 50; // Resources are first 50%
+        updateProgress(progress, "Loading Resources...");
+        
+        if (loadedResources >= totalResources) {
+            initializeGame();
+        }
+    }
+
+    async function initializeGame() {
+        // Start initializing game systems
+        updateProgress(50, "Initializing Game Systems...");
+        
+        // Initialize core systems
+        updateMeowsCounter();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        updateProgress(60, "Setting up Meow Counter...");
+        
+        updateCatShop();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        updateProgress(70, "Preparing Cat Shop...");
+        
+        addMeowsPerSecondBase();
+        pollBreakPoints();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        updateProgress(80, "Configuring Game Logic...");
+        
+        draw();
+        updateWeatherTimer();
+        animateWeather();
+        weatherTimer();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        updateProgress(90, "Setting up Weather System...");
+        
+        await initBackgroundMusic();
+        await updateNineLivesDisplay();
+        setInterval(updateNineLivesDisplay, 1000);
+        await new Promise(resolve => setTimeout(resolve, 100));
+        timeUntilWeatherChange = 40;
+        updateProgress(100, "Starting Game...");
+
+        // Final delay to ensure smooth transition
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Remove loading screen
+        loadingScreen.classList.add('fade-out');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        loadingScreen.remove();
+    }
+
+    // Track image loading
+    Array.from(document.images).forEach(img => {
+        if (img.complete) {
+            loadedResources++;
+            updateResourceProgress();
+        } else {
+            img.addEventListener('load', () => {
+                loadedResources++;
+                updateResourceProgress();
+            });
+            img.addEventListener('error', () => {
+                loadedResources++;
+                updateResourceProgress();
+                console.error('Failed to load image:', img.src);
+            });
+        }
+    });
+
+    // Track audio loading
+    function preloadAudio(url) {
+        return new Promise((resolve) => {
+            const audio = new Audio();
+            audio.addEventListener('canplaythrough', () => {
+                loadedResources++;
+                updateResourceProgress();
+                resolve();
+            });
+            audio.addEventListener('error', () => {
+                loadedResources++;
+                updateResourceProgress();
+                console.error('Failed to load audio:', url);
+                resolve();
+            });
+            audio.src = url;
+        });
+    }
+
+    Promise.all([
+        preloadAudio('./audio/background-music.mp3')
+    ]).catch(console.error);
+}
+
+// Initialize loading screen when DOM is ready
+document.addEventListener('DOMContentLoaded', initLoadingScreen);
+
+// Export necessary functions to window
 window.catClicked = catClicked;
 window.attemptCatBuy = attemptCatBuy;
 window.updateUpgradeRows = updateUpgradeRows;
