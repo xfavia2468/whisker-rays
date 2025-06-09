@@ -101,15 +101,6 @@
                         <img src="./images/laserPointer.png" alt="Laser Pointer" class="upgradepic">
                     </button>
                 </div>
-                <div id="yarnballrow" class="hidden upgraderow">
-                    <button id="yarnballbutton" class="upgradebutton" data-tooltip data-tooltip-title="Yarn Ball" data-tooltip-description="A classic cat toy! Doubles the meow production of all your basic cats." onclick="updateUpgradeRows(1)">
-                        <div class="verticalgrid">
-                            <p id="yarnballtext" class="upgradetext"> (Ⲙ250) Yarn ball</p>
-                            <p>Double Cat1 Ⲙps</p>
-                        </div>
-                        <img src="./images/yarnball.webp" alt="yarn ball" class="upgradepic">
-                    </button>
-                </div>
                 <div id="toymouserow" class="hidden upgraderow">
                     <button id="toymousebutton" class="upgradebutton" data-tooltip data-tooltip-title="Toy Mouse" data-tooltip-description="Cats can't resist chasing this toy mouse! Adds one extra meow to each click." onclick="updateUpgradeRows(2)">
                         <div class="verticalgrid">
@@ -117,6 +108,15 @@
                             <p>+1 Ⲙ per click</p>
                         </div>
                         <img src="./images/toyMouse.webp" alt="Toy Mouse" class="upgradepic">
+                    </button>
+                </div>
+                <div id="yarnballrow" class="hidden upgraderow">
+                    <button id="yarnballbutton" class="upgradebutton" data-tooltip data-tooltip-title="Yarn Ball" data-tooltip-description="A classic cat toy! Doubles the meow production of all your basic cats." onclick="updateUpgradeRows(1)">
+                        <div class="verticalgrid">
+                            <p id="yarnballtext" class="upgradetext"> (Ⲙ250) Yarn Ball</p>
+                            <p>Double Cat1 Ⲙps</p>
+                        </div>
+                        <img src="./images/yarnball.webp" alt="yarn ball" class="upgradepic">
                     </button>
                 </div>
                 <div id="catbedrow" class="hidden upgraderow">
@@ -135,6 +135,186 @@
                             <p>+5% click per cat type</p>
                         </div>
                         <img src="./images/cardboardBox.png" alt="Cardboard Box" class="upgradepic">
+                    </button>
+                </div>
+                <div id="cattrainingrow" class="hidden upgraderow">
+                    <button id="cattrainingbutton" class="upgradebutton" data-tooltip data-tooltip-title="Basic Cat Training" data-tooltip-description="Train your cats in the art of meowing! Increases all cat production by 50%." onclick="updateUpgradeRows(17)">
+                        <div class="verticalgrid">
+                            <p id="cattrainingtext" class="upgradetext"> (Ⲙ2000) Cat Training</p>
+                            <p>+50% cat Ⲙps</p>
+                        </div>
+                        <img src="./images/training.png" alt="Cat Training" class="upgradepic">
+                    </button>
+                </div>
+                <div id="cattowerrow" class="hidden upgraderow">
+                    <button id="cattowerbutton" class="upgradebutton" data-tooltip data-tooltip-title="Cat Tower" data-tooltip-description="A cozy climbing tower for your cats! Increases click value by 25%." onclick="updateUpgradeRows(21)">
+                        <div class="verticalgrid">
+                            <p id="cattowertext" class="upgradetext"> (Ⲙ1000) Cat Tower</p>
+                            <p>+25% Ⲙ per click</p>
+                        </div>
+                        <img src="./images/catTower.webp" alt="Cat Tower" class="upgradepic">
+                    </button>
+                </div>
+                <div id="premiumlaserrow" class="hidden upgraderow">
+                    <button id="premiumlaserbutton" class="upgradebutton" data-tooltip data-tooltip-title="Premium Laser Pointer" data-tooltip-description="A high-end laser pointer with extra bright beam! Triples the meows you get from each click." onclick="updateUpgradeRows(8)">
+                        <div class="verticalgrid">
+                            <p id="premiumlasertext" class="upgradetext"> (Ⲙ5000) Premium Laser</p>
+                            <p>Triple Ⲙ per click</p>
+                        </div>
+                        <img src="./images/laserPointer.png" alt="Premium Laser Pointer" class="upgradepic premium-effect">
+                    </button>
+                </div>
+                <div id="premiumtoyrow" class="hidden upgraderow">
+                    <button id="premiumtoybutton" class="upgradebutton" data-tooltip data-tooltip-title="Premium Toy Mouse" data-tooltip-description="A realistic mechanical mouse toy! Adds three extra meows to each click." onclick="updateUpgradeRows(14)">
+                        <div class="verticalgrid">
+                            <p id="premiumtoytext" class="upgradetext"> (Ⲙ7500) Premium Mouse</p>
+                            <p>+3 Ⲙ per click</p>
+                        </div>
+                        <img src="./images/toyMouse.webp" alt="Premium Toy Mouse" class="upgradepic premium-effect">
+                    </button>
+                </div>
+                <div id="scratchingpostrow" class="hidden upgraderow">
+                    <button id="scratchingpostbutton" class="upgradebutton" data-tooltip data-tooltip-title="Deluxe Scratching Post" data-tooltip-description="Each consecutive click within 2 seconds increases click value by 10% (max 5 stacks)." onclick="updateUpgradeRows(6)">
+                        <div class="verticalgrid">
+                            <p id="scratchingposttext" class="upgradetext"> (Ⲙ8000) Scratching Post</p>
+                            <p>Combo click bonus</p>
+                        </div>
+                        <img src="./images/scratchingPost.png" alt="Scratching Post" class="upgradepic">
+                    </button>
+                </div>
+                <div id="premiumtowerrow" class="hidden upgraderow">
+                    <button id="premiumtowerbutton" class="upgradebutton" data-tooltip data-tooltip-title="Luxury Cat Tower" data-tooltip-description="A multi-level premium cat tower with scratching posts and hideaways! Increases click value by 75%." onclick="updateUpgradeRows(22)">
+                        <div class="verticalgrid">
+                            <p id="premiumtowertext" class="upgradetext"> (Ⲙ10000) Luxury Tower</p>
+                            <p>+75% Ⲙ per click</p>
+                        </div>
+                        <img src="./images/catTower.webp" alt="Luxury Cat Tower" class="upgradepic premium-effect">
+                    </button>
+                </div>
+                <div id="automaticfeederrow" class="hidden upgraderow">
+                    <button id="automaticfeederbutton" class="upgradebutton" data-tooltip data-tooltip-title="Automatic Feeder" data-tooltip-description="Well-fed cats are happy cats! Every 5 minutes, automatically generates 30 seconds worth of production." onclick="updateUpgradeRows(5)">
+                        <div class="verticalgrid">
+                            <p id="automaticfeedertext" class="upgradetext"> (Ⲙ12000) Auto Feeder</p>
+                            <p>Periodic bonus production</p>
+                        </div>
+                        <img src="./images/catFeeder.png" alt="Automatic Feeder" class="upgradepic">
+                    </button>
+                </div>
+                <div id="premiumtrainingrow" class="hidden upgraderow">
+                    <button id="premiumtrainingbutton" class="upgradebutton" data-tooltip data-tooltip-title="Advanced Cat Training" data-tooltip-description="Professional cat training techniques! Doubles all cat production." onclick="updateUpgradeRows(18)">
+                        <div class="verticalgrid">
+                            <p id="premiumtrainingtext" class="upgradetext"> (Ⲙ20000) Advanced Training</p>
+                            <p>+100% cat Ⲙps</p>
+                        </div>
+                        <img src="./images/training.png" alt="Advanced Training" class="upgradepic premium-effect">
+                    </button>
+                </div>
+                <div id="windowperchrow" class="hidden upgraderow">
+                    <button id="windowperchbutton" class="upgradebutton" data-tooltip data-tooltip-title="Window Perch" data-tooltip-description="Cats love watching birds! During sunny weather, each cat type owned increases production of all cats by 2%." onclick="updateUpgradeRows(7)">
+                        <div class="verticalgrid">
+                            <p id="windowperchtext" class="upgradetext"> (Ⲙ20000) Window Perch</p>
+                            <p>Sun synergy bonus</p>
+                        </div>
+                        <img src="./images/windowPerch.png" alt="Window Perch" class="upgradepic">
+                    </button>
+                </div>
+                <div id="premiumyarnrow" class="hidden upgraderow">
+                    <button id="premiumyarnbutton" class="upgradebutton" data-tooltip data-tooltip-title="Premium Yarn Ball" data-tooltip-description="High-quality wool yarn! Triples the meow production of your first two cat types." onclick="updateUpgradeRows(11)">
+                        <div class="verticalgrid">
+                            <p id="premiumyarntext" class="upgradetext"> (Ⲙ25000) Premium Yarn</p>
+                            <p>Triple Cat1&2 Ⲙps</p>
+                        </div>
+                        <img src="./images/yarnball.webp" alt="Premium Yarn Ball" class="upgradepic premium-effect">
+                    </button>
+                </div>
+                <div id="ultimatelaserrow" class="hidden upgraderow">
+                    <button id="ultimatelaserbutton" class="upgradebutton" data-tooltip data-tooltip-title="Ultimate Laser Pointer" data-tooltip-description="Military-grade laser pointer! Quintuples the meows you get from each click." onclick="updateUpgradeRows(9)">
+                        <div class="verticalgrid">
+                            <p id="ultimatelasertext" class="upgradetext"> (Ⲙ50000) Ultimate Laser</p>
+                            <p>5x Ⲙ per click</p>
+                        </div>
+                        <img src="./images/laserPointer.png" alt="Ultimate Laser Pointer" class="upgradepic ultimate-effect">
+                    </button>
+                </div>
+                <div id="ultimatetoyrow" class="hidden upgraderow">
+                    <button id="ultimatetoybutton" class="upgradebutton" data-tooltip data-tooltip-title="Ultimate Toy Mouse" data-tooltip-description="An AI-powered robotic mouse! Adds eight extra meows to each click." onclick="updateUpgradeRows(15)">
+                        <div class="verticalgrid">
+                            <p id="ultimatetoytext" class="upgradetext"> (Ⲙ75000) Ultimate Mouse</p>
+                            <p>+8 Ⲙ per click</p>
+                        </div>
+                        <img src="./images/toyMouse.webp" alt="Ultimate Toy Mouse" class="upgradepic ultimate-effect">
+                    </button>
+                </div>
+                <div id="ultimatetowerrow" class="hidden upgraderow">
+                    <button id="ultimatetowerbutton" class="upgradebutton" data-tooltip data-tooltip-title="Ultimate Cat Tower" data-tooltip-description="A massive cat paradise with heated beds and automated toys! Increases click value by 150%." onclick="updateUpgradeRows(23)">
+                        <div class="verticalgrid">
+                            <p id="ultimatetowertext" class="upgradetext"> (Ⲙ100000) Ultimate Tower</p>
+                            <p>+150% Ⲙ per click</p>
+                        </div>
+                        <img src="./images/catTower.webp" alt="Ultimate Cat Tower" class="upgradepic ultimate-effect">
+                    </button>
+                </div>
+                <div id="ultimatetrainingrow" class="hidden upgraderow">
+                    <button id="ultimatetrainingbutton" class="upgradebutton" data-tooltip data-tooltip-title="Master Cat Training" data-tooltip-description="Elite cat academy training! Triples all cat production." onclick="updateUpgradeRows(19)">
+                        <div class="verticalgrid">
+                            <p id="ultimatetrainingtext" class="upgradetext"> (Ⲙ200000) Master Training</p>
+                            <p>+200% cat Ⲙps</p>
+                        </div>
+                        <img src="./images/training.png" alt="Master Training" class="upgradepic ultimate-effect">
+                    </button>
+                </div>
+                <div id="ultimateyarnrow" class="hidden upgraderow">
+                    <button id="ultimateyarnbutton" class="upgradebutton" data-tooltip data-tooltip-title="Ultimate Yarn Ball" data-tooltip-description="Enchanted never-ending yarn! Quintuples the meow production of your first three cat types." onclick="updateUpgradeRows(12)">
+                        <div class="verticalgrid">
+                            <p id="ultimateyarntext" class="upgradetext"> (Ⲙ250000) Ultimate Yarn</p>
+                            <p>5x Cat1-3 Ⲙps</p>
+                        </div>
+                        <img src="./images/yarnball.webp" alt="Ultimate Yarn Ball" class="upgradepic ultimate-effect">
+                    </button>
+                </div>
+                <div id="divinelaserrow" class="hidden upgraderow">
+                    <button id="divinelaserbutton" class="upgradebutton" data-tooltip data-tooltip-title="Divine Laser Pointer" data-tooltip-description="A laser pointer blessed by the cat gods! Multiplies click value by 10." onclick="updateUpgradeRows(10)">
+                        <div class="verticalgrid">
+                            <p id="divinelasertext" class="upgradetext"> (Ⲙ500000) Divine Laser</p>
+                            <p>10x Ⲙ per click</p>
+                        </div>
+                        <img src="./images/laserPointer.png" alt="Divine Laser Pointer" class="upgradepic divine-effect">
+                    </button>
+                </div>
+                <div id="divinetoyrow" class="hidden upgraderow">
+                    <button id="divinetoybutton" class="upgradebutton" data-tooltip data-tooltip-title="Divine Toy Mouse" data-tooltip-description="A mystical mouse blessed with infinite energy! Adds twenty extra meows to each click." onclick="updateUpgradeRows(16)">
+                        <div class="verticalgrid">
+                            <p id="divinetoytext" class="upgradetext"> (Ⲙ750000) Divine Mouse</p>
+                            <p>+20 Ⲙ per click</p>
+                        </div>
+                        <img src="./images/toyMouse.webp" alt="Ultimate Toy Mouse" class="upgradepic divine-effect">
+                    </button>
+                </div>
+                <div id="divinetowerrow" class="hidden upgraderow">
+                    <button id="divinetowerbutton" class="upgradebutton" data-tooltip data-tooltip-title="Divine Cat Tower" data-tooltip-description="A celestial tower that reaches to the heavens! Increases click value by 300%." onclick="updateUpgradeRows(24)">
+                        <div class="verticalgrid">
+                            <p id="divinetowertext" class="upgradetext"> (Ⲙ1000000) Divine Tower</p>
+                            <p>+300% Ⲙ per click</p>
+                        </div>
+                        <img src="./images/catTower.webp" alt="Divine Cat Tower" class="upgradepic divine-effect">
+                    </button>
+                </div>
+                <div id="divinetrainingrow" class="hidden upgraderow">
+                    <button id="divinetrainingbutton" class="upgradebutton" data-tooltip data-tooltip-title="Divine Cat Training" data-tooltip-description="Ancient cat wisdom passed down by the cat gods! Quintuples all cat production." onclick="updateUpgradeRows(20)">
+                        <div class="verticalgrid">
+                            <p id="divinetrainingtext" class="upgradetext"> (Ⲙ2000000) Divine Training</p>
+                            <p>+400% cat Ⲙps</p>
+                        </div>
+                        <img src="./images/training.png" alt="Divine Training" class="upgradepic divine-effect">
+                    </button>
+                </div>
+                <div id="divineyarnrow" class="hidden upgraderow">
+                    <button id="divineyarnbutton" class="upgradebutton" data-tooltip data-tooltip-title="Divine Yarn Ball" data-tooltip-description="Yarn spun from cosmic strings! Multiplies the meow production of all cat types by 3." onclick="updateUpgradeRows(13)">
+                        <div class="verticalgrid">
+                            <p id="divineyarntext" class="upgradetext"> (Ⲙ2500000) Divine Yarn</p>
+                            <p>Triple ALL cat Ⲙps</p>
+                        </div>
+                        <img src="./images/yarnball.webp" alt="Divine Yarn Ball" class="upgradepic divine-effect">
                     </button>
                 </div>
             </div>

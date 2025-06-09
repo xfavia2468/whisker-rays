@@ -63,10 +63,9 @@ class Tooltip {
     }
 }
 
-// Create and initialize tooltip instance
 const tooltip = new Tooltip();
 document.addEventListener('DOMContentLoaded', () => tooltip.init());
-window.reinitTooltips = () => tooltip.init();  // Add reinitialization function
+window.reinitTooltips = () => tooltip.init();
 
 const meowsCounter = document.getElementById("meowsCounter");
 const pawEffectCanvas = document.getElementById("pawEffectCanvas");
@@ -108,6 +107,37 @@ const yarnBallRow = document.getElementById("yarnballrow");
 const toyMouseRow = document.getElementById("toymouserow");
 const catBedRow = document.getElementById("catbedrow");
 const cardboardRow = document.getElementById("cardboardrow");
+const autoFeederRow = document.getElementById("automaticfeederrow");
+const scratchingPostRow = document.getElementById("scratchingpostrow");
+const windowPerchRow = document.getElementById("windowperchrow");
+
+const premiumLaserRow = document.getElementById("premiumlaserrow");
+const premiumYarnRow = document.getElementById("premiumyarnrow");
+const ultimateLaserRow = document.getElementById("ultimatelaserrow");
+const ultimateYarnRow = document.getElementById("ultimateyarnrow");
+const divineLaserRow = document.getElementById("divinelaserrow");
+const divineYarnRow = document.getElementById("divineyarnrow");
+const premiumToyRow = document.getElementById("premiumtoyrow");
+const ultimateToyRow = document.getElementById("ultimatetoyrow");
+const divineToyRow = document.getElementById("divinetoyrow");
+const catTrainingRow = document.getElementById("cattrainingrow");
+const premiumTrainingRow = document.getElementById("premiumtrainingrow");
+const ultimateTrainingRow = document.getElementById("ultimatetrainingrow");
+const divineTrainingRow = document.getElementById("divinetrainingrow");
+const catTowerRow = document.getElementById("cattowerrow");
+const premiumTowerRow = document.getElementById("premiumtowerrow");
+const ultimateTowerRow = document.getElementById("ultimatetowerrow");
+const divineTowerRow = document.getElementById("divinetowerrow");
+
+const nineLivesButton = document.getElementById('nineLivesButton');
+const catnipBonusText = document.getElementById('catnipBonusText');
+const catnipOnResetText = document.getElementById('catnipOnResetText');
+
+const resetAllButton = document.getElementById('resetAllButton');
+
+const statsButton = document.getElementById('statsButton');
+const statsMenu = document.getElementById('statsMenu');
+const closeStats = document.getElementById('closeStats');
 
 let totalMeows = 0;
 let clickTimestamps = [];
@@ -124,10 +154,34 @@ const catRows = [cat1Row, cat2Row, cat3Row, cat4Row, cat5Row, cat6Row, cat7Row, 
 
 const weatherCooldown = 120;
 
-const upgradePrices = [50, 250, 150, 300, 1500];
-const upgradeBreakPoints = [25, 100, 75, 200, 1000];
-const upgradeActive = [0, 0, 0, 0, 0];
-const upgradeRows = [laserPointerRow, yarnBallRow, toyMouseRow, catBedRow, cardboardRow];
+const upgradePrices = [
+    50, 250, 150, 300, 1500, 12000, 8000, 20000,  // Original upgrades
+    5000, 50000, 500000,  // Laser pointer tiers
+    25000, 250000, 2500000,  // Yarn ball tiers
+    7500, 75000, 750000,  // Toy mouse tiers
+    2000, 20000, 200000, 2000000,  // Cat training tiers
+    1000, 10000, 100000, 1000000  // Cat tower tiers
+];
+
+const upgradeBreakPoints = [
+    25, 100, 75, 200, 1000, 5000, 3000, 10000,  // Original upgrades
+    2500, 25000, 250000,  // Laser pointer tiers
+    10000, 100000, 1000000,  // Yarn ball tiers
+    3000, 30000, 300000,  // Toy mouse tiers
+    1000, 10000, 100000, 1000000,  // Cat training tiers
+    500, 5000, 50000, 500000  // Cat tower tiers
+];
+
+const upgradeActive = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+const upgradeRows = [
+    laserPointerRow, yarnBallRow, toyMouseRow, catBedRow, cardboardRow, 
+    autoFeederRow, scratchingPostRow, windowPerchRow,
+    premiumLaserRow, ultimateLaserRow, divineLaserRow,
+    premiumYarnRow, ultimateYarnRow, divineYarnRow,
+    premiumToyRow, ultimateToyRow, divineToyRow,
+    catTrainingRow, premiumTrainingRow, ultimateTrainingRow, divineTrainingRow,
+    catTowerRow, premiumTowerRow, ultimateTowerRow, divineTowerRow
+];
 
 let musicVolume = 50;
 let backgroundMusic = new Audio("./audio/background-music.mp3");
@@ -140,22 +194,17 @@ const BASE_NINE_LIVES_REQUIREMENT = 1000000;
 let totalCatnip = 0;
 let catnipMultiplier = 1;
 
-const nineLivesButton = document.getElementById('nineLivesButton');
-const catnipBonusText = document.getElementById('catnipBonusText');
-const catnipOnResetText = document.getElementById('catnipOnResetText');
-
-const resetAllButton = document.getElementById('resetAllButton');
-
-const statsButton = document.getElementById('statsButton');
-const statsMenu = document.getElementById('statsMenu');
-const closeStats = document.getElementById('closeStats');
-
 let gameStartTime = Date.now();
 let totalMeowsGenerated = 0;
 let meowsFromClicks = 0;
 let meowsFromCats = 0;
 let totalClicks = 0;
 let bestMps = 0;
+
+// New upgrade-specific variables
+let lastAutoFeederTime = 0;
+let clickComboCount = 0;
+let lastComboClickTime = 0;
 
 function initBackgroundMusic() {
     return new Promise((resolve) => {
@@ -201,7 +250,6 @@ musicVolumeSlider.addEventListener('input', () => {
             musicEnabled = true;
         }
     }
-    console.log(`Music volume: ${volume}`);
 });
 
 function updateMeowsCounter() {
@@ -302,6 +350,17 @@ function generateMeowsPerSecondBase() {
 
 function addMeowsPerSecondBase() {
     setInterval(() => {
+        const now = Date.now();
+        
+        // Check auto feeder
+        if (upgradeActive[5] === 1 && now - lastAutoFeederTime >= 300000) { // 5 minutes
+            const production = generateMeowsPerSecondBase() * 30; // 30 seconds worth
+            totalMeows += production;
+            totalMeowsGenerated += production;
+            meowsFromCats += production;
+            lastAutoFeederTime = now;
+        }
+
         const mpsValue = generateMeowsPerSecondBase() / 20;
         totalMeows += mpsValue;
         totalMeowsGenerated += mpsValue;
@@ -334,9 +393,30 @@ function getCatCost(tier, quantityOwned) {
 function getTierMps(tier) {
     let multiplier = 1.0;
     let weatherMultiplier = 1.0;
+    
+    // Weather effects
     if (weatherState === "stormy") weatherMultiplier = 2.0;
     if (weatherState === "rainy" && upgradeActive[3] === 1) weatherMultiplier *= 1.1; // cat bed rain bonus
-    if (tier === 1 && upgradeActive[1] === 1) multiplier *= 2; // yarn ball
+    if (weatherState === "sunny" && upgradeActive[7] === 1) { // window perch sunny bonus
+        let catTypesOwned = 0;
+        for (let i = 0; i < catQuantities.length; i++) {
+            if (catQuantities[i] > 0) catTypesOwned++;
+        }
+        weatherMultiplier *= (1 + (catTypesOwned * 0.02)); // 2% per cat type
+    }
+    
+    // Yarn ball upgrades
+    if (tier === 1 && upgradeActive[1] === 1) multiplier *= 2; // basic yarn
+    if (tier <= 2 && upgradeActive[11] === 1) multiplier *= 3; // premium yarn
+    if (tier <= 3 && upgradeActive[12] === 1) multiplier *= 5; // ultimate yarn
+    if (upgradeActive[13] === 1) multiplier *= 3; // divine yarn affects all cats
+    
+    // Cat Training series
+    if (upgradeActive[17]) multiplier *= 1.5; // basic training
+    if (upgradeActive[18]) multiplier *= 2; // premium training
+    if (upgradeActive[19]) multiplier *= 3; // ultimate training
+    if (upgradeActive[20]) multiplier *= 5; // divine training
+
     return catQuantities[tier - 1] * catMps[tier - 1] * weatherMultiplier * multiplier * catnipMultiplier;
 }
 
@@ -345,11 +425,25 @@ function generateMeowsPerClick() {
     let multiplicativeMultipliers = 1;
     let additiveMultipliers = 0;
 
-    //laser pointer
-    if (upgradeActive[0] === 1) multiplicativeMultipliers *= 2;
-    //toy mouse
-    if (upgradeActive[2] === 1) additiveMultipliers += 1;
-    //cardboard box
+    // Laser pointer upgrades (multiplicative)
+    if (upgradeActive[0] === 1) multiplicativeMultipliers *= 2; // basic laser
+    if (upgradeActive[8] === 1) multiplicativeMultipliers *= 3; // premium laser
+    if (upgradeActive[9] === 1) multiplicativeMultipliers *= 5; // ultimate laser
+    if (upgradeActive[10] === 1) multiplicativeMultipliers *= 10; // divine laser
+    
+    // Cat Tower upgrades (multiplicative)
+    if (upgradeActive[21] === 1) multiplicativeMultipliers *= 1.25; // basic tower
+    if (upgradeActive[22] === 1) multiplicativeMultipliers *= 1.75; // premium tower
+    if (upgradeActive[23] === 1) multiplicativeMultipliers *= 2.5; // ultimate tower
+    if (upgradeActive[24] === 1) multiplicativeMultipliers *= 4; // divine tower
+    
+    // Toy mouse upgrades (additive)
+    if (upgradeActive[2] === 1) additiveMultipliers += 1; // basic mouse
+    if (upgradeActive[14] === 1) additiveMultipliers += 3; // premium mouse
+    if (upgradeActive[15] === 1) additiveMultipliers += 8; // ultimate mouse
+    if (upgradeActive[16] === 1) additiveMultipliers += 20; // divine mouse
+    
+    // Cardboard box
     if (upgradeActive[4] === 1) {
         let uniqueCatTypes = 0;
         for (let i = 0; i < catQuantities.length; i++) {
@@ -357,7 +451,20 @@ function generateMeowsPerClick() {
         }
         multiplicativeMultipliers *= (1 + (0.05 * uniqueCatTypes));
     }
-    //weather
+    
+    // Scratching post combo system
+    if (upgradeActive[6] === 1) {
+        const now = Date.now();
+        if (now - lastComboClickTime <= 2000) { // Within 2 seconds
+            clickComboCount = Math.min(clickComboCount + 1, 5); // Max 5 stacks
+        } else {
+            clickComboCount = 0;
+        }
+        lastComboClickTime = now;
+        multiplicativeMultipliers *= (1 + (clickComboCount * 0.1)); // 10% per stack
+    }
+    
+    // weather night bonus
     if (weatherState === "night") additiveMultipliers += 1;
 
     return ((base + additiveMultipliers) * multiplicativeMultipliers) * catnipMultiplier;
@@ -367,10 +474,16 @@ function updateUpgradeRows(index) {
     let price = upgradePrices[index];
     let active = upgradeActive[index] === 1;
     let row = upgradeRows[index];
+    
     if (!active && price <= totalMeows) {
         totalMeows -= price;
         row.classList.add("hidden");
         upgradeActive[index] = 1;
+        
+        // Initialize auto feeder timer
+        if (index === 5) {
+            lastAutoFeederTime = Date.now();
+        }
     }
 }
 
@@ -580,23 +693,19 @@ closeSettings.addEventListener('click', () => {
 mpsCounterCheckbox.addEventListener('change', () => {
     if (mpsCounterCheckbox.checked) {
         mpsCounterOn = true;
-        console.log('Ⲙps counter enabled');
     } else {
         mpsCounterOn = false;
-        console.log('Ⲙps counter disabled');
     }
 });
 
 musicVolumeSlider.addEventListener('input', () => {
     const volume = parseInt(musicVolumeSlider.value);
     musicVolume = volume;
-    console.log(`Music volume: ${volume}`);
 });
 
 sfxVolumeSlider.addEventListener('input', () => {
     const volume = parseInt(sfxVolumeSlider.value);
     sfxVolume = volume;
-    console.log(`SFX volume: ${volume}`);
 });
 
 function playMeow() {
@@ -763,17 +872,60 @@ function updateStats() {
 
     // Multiplier stats
     let clickMultiplier = 1;
-    if (upgradeActive[0]) clickMultiplier *= 2; // Laser pointer
-    if (upgradeActive[2]) clickMultiplier += 1; // Toy mouse
+    // Laser pointer series
+    if (upgradeActive[0]) clickMultiplier *= 2; // Basic laser
+    if (upgradeActive[8]) clickMultiplier *= 3; // Premium laser
+    if (upgradeActive[9]) clickMultiplier *= 5; // Ultimate laser
+    if (upgradeActive[10]) clickMultiplier *= 10; // Divine laser
+    
+    // Toy mouse series (additive)
+    if (upgradeActive[2]) clickMultiplier += 1; // Basic mouse
+    if (upgradeActive[14]) clickMultiplier += 3; // Premium mouse
+    if (upgradeActive[15]) clickMultiplier += 8; // Ultimate mouse
+    if (upgradeActive[16]) clickMultiplier += 20; // Divine mouse
+    
+    // Cat Tower series
+    if (upgradeActive[21]) clickMultiplier *= 1.25; // Basic tower
+    if (upgradeActive[22]) clickMultiplier *= 1.75; // Premium tower
+    if (upgradeActive[23]) clickMultiplier *= 2.5; // Ultimate tower
+    if (upgradeActive[24]) clickMultiplier *= 4; // Divine tower
+    
+    // Cardboard box bonus
+    if (upgradeActive[4]) {
+        let uniqueCatTypes = 0;
+        for (let i = 0; i < catQuantities.length; i++) {
+            if (catQuantities[i] > 0) uniqueCatTypes++;
+        }
+        clickMultiplier *= (1 + (0.05 * uniqueCatTypes));
+    }
+    
     document.getElementById('clickMultiplier').textContent = clickMultiplier.toFixed(2) + 'x';
     
     let catMultiplier = 1;
-    if (upgradeActive[1]) catMultiplier *= 2; // Yarn ball
+    // Yarn ball series
+    if (upgradeActive[1]) catMultiplier *= 2; // Basic yarn
+    if (upgradeActive[11]) catMultiplier *= 3; // Premium yarn (for first 2 cats)
+    if (upgradeActive[12]) catMultiplier *= 5; // Ultimate yarn (for first 3 cats)
+    if (upgradeActive[13]) catMultiplier *= 3; // Divine yarn (all cats)
+    
+    // Cat Training series
+    if (upgradeActive[17]) catMultiplier *= 1.5; // Basic training
+    if (upgradeActive[18]) catMultiplier *= 2; // Premium training
+    if (upgradeActive[19]) catMultiplier *= 3; // Ultimate training
+    if (upgradeActive[20]) catMultiplier *= 5; // Divine training
+    
     document.getElementById('catMultiplier').textContent = catMultiplier.toFixed(2) + 'x';
     
     let weatherMultiplier = 1;
     if (weatherState === "stormy") weatherMultiplier = 2;
     if (weatherState === "rainy" && upgradeActive[3]) weatherMultiplier *= 1.1;
+    if (weatherState === "sunny" && upgradeActive[7]) { // Window perch sunny bonus
+        let catTypesOwned = 0;
+        for (let i = 0; i < catQuantities.length; i++) {
+            if (catQuantities[i] > 0) catTypesOwned++;
+        }
+        weatherMultiplier *= (1 + (catTypesOwned * 0.02)); // 2% per cat type
+    }
     document.getElementById('weatherMultiplier').textContent = weatherMultiplier.toFixed(2) + 'x';
     
     document.getElementById('catnipMultiplierStat').textContent = catnipMultiplier.toFixed(2) + 'x';
@@ -815,7 +967,6 @@ function initLoadingScreen() {
     function updateResourceProgress() {
         const progress = (loadedResources / totalResources) * 50; // Resources are first 50%
         updateProgress(progress, "Loading Resources...");
-        console.log(loadedResources); //////////////////aaa
         if (loadedResources >= totalResources && !gameInitialized) {
             gameInitialized = true;
             initializeGame();
@@ -912,7 +1063,10 @@ window.catClicked = catClicked;
 window.attemptCatBuy = attemptCatBuy;
 window.updateUpgradeRows = updateUpgradeRows;
 
+//=============================================================
 //_______________________TESTING_______________________________
+//=============================================================
+
 let isDevMode = true; // WILL DETERMINE IF CHEATS ARE ON
 
 if (isDevMode) {
