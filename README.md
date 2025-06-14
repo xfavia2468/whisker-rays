@@ -1,5 +1,7 @@
 ## 🐾 Cat Clicker🐾
 
+#### Play online now: [Cat Clicker Github page](xfavia2468.github.io/whisker-rays/)
+
 A simple incremental game built with HTML, CSS, and JavaScript.
 
 Cat Clicker is a lighthearted browser-based incremental game inspired by classics like Cookie Clicker. 
